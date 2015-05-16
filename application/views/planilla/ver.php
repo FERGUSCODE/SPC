@@ -10,7 +10,7 @@
 </tr>
 </thead>
 <tbody>
-<td><?php /*echo $datos->monitores;*/ ?></td>
+<td><?php echo implode(', ', $monitores); ?></td>
 <td class="col-md-1 text-center"><a href="<?php echo $enlace_agregar_dato; ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> Insertar Registro</a></td>
 <td class="col-md-1 text-center"><a href="<?php echo $enlace_base_exportar_dato . '/' . $datos->id; ?>" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-file"></span> PDF</a></td>
 <td class="col-md-1 text-center"><a href="<?php echo $enlace_base_grafico_dato . '/' . $datos->id; ?>" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-stats"></span> Ver</a></td>

@@ -6,6 +6,14 @@ class Planillas extends CI_Model {
     $this->load->database();
   }
 
+  public function get_usuarios_planilla($planilla_id) {
+    $this->db->select('nombre');
+    $this->db->join('usuario', 'usuario.id = usuario_id');
+    $this->db->where('planilla_id', $planilla_id);
+    $query = $this->db->get('planilla_acceso');
+    return $query->result();
+  }
+
   public function get_maquina_by_id($maquina_id) {
     $this->db->select('sector_id, nombre, min, max, unidad');
     $this->db->where('id', $maquina_id);

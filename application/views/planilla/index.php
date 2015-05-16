@@ -11,9 +11,9 @@
 <tbody>
 <?php foreach($planillas as $planilla){ ?>
 <tr>
-<td class="col-md-2 text-center"><?php echo $planilla->fecha; ?></td>
-<td class="text-center"><?php /*echo $planilla->monitores;*/ ?></td>
-<td class="col-md-2 text-center"><a href="<?php echo $enlace_base_ver . '/' . $planilla->id; ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-eye-open"></span> Ver</a> <a href="<?php echo $enlace_base_editar . '/' . $planilla->id; ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> Editar</a></td>
+<td class="col-md-2 text-center"><?php echo $planilla['fecha']; ?></td>
+<td class="text-center"><?php echo $planilla['monitores']; ?></td>
+<td class="col-md-2 text-center"><a href="<?php echo $enlace_base_ver . '/' . $planilla['id']; ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-eye-open"></span> Ver</a> <a href="<?php echo $enlace_base_editar . '/' . $planilla['id']; ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> Editar</a></td>
 </tr>
 <?php } ?>
 </tbody>

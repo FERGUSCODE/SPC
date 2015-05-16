@@ -29,6 +29,23 @@ class Planilla extends CI_Controller {
     }
 
     $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
+    $planillas = $this->planillas->get_by_sector_url($sector_url);
+
+    $planilla_data = array();
+    foreach ($planillas as $planilla) {
+      $monitor_nombre = $this->planillas->get_usuarios_planilla($planilla->id);
+
+      $monitores = array();
+      for ($i = 0, $monitorDataLength = sizeof($monitor_nombre); $i < $monitorDataLength; ++$i) {
+        array_push($monitores, $monitor_nombre[$i]->nombre);
+      }
+
+      array_push($planilla_data, array(
+        'id' => $planilla->id, 
+        'fecha' => $planilla->fecha, 
+        'monitores' => $monitores
+      ));
+    }
 
     if ($sector_data) {
       $this->load->view('header');
@@ -42,7 +59,7 @@ class Planilla extends CI_Controller {
         'enlace_agregar' => base_url('planilla/' . $sector_url . '/agregar'), 
         'enlace_base_ver' => base_url('planilla/' . $sector_url . '/ver/'), 
         'enlace_base_editar' => base_url('planilla/' . $sector_url . '/editar/'), 
-        'planillas' => $this->planillas->get_by_sector_url($sector_url)
+        'planillas' => $planilla_data
       ));
     } else {
       show_404('planilla');
@@ -56,6 +73,12 @@ class Planilla extends CI_Controller {
     }
 
     $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
+    $monitor_nombre = $this->planillas->get_usuarios_planilla($planilla_id);
+
+    $monitores = array();
+    for ($i = 0, $monitorDataLength = sizeof($monitor_nombre); $i < $monitorDataLength; ++$i) {
+      array_push($monitores, $monitor_nombre[$i]->nombre);
+    }
 
     $this->load->view('header');
     $this->load->view('header-admin', array(
@@ -66,6 +89,7 @@ class Planilla extends CI_Controller {
     $this->load->view('planilla/ver', array(
       'titulo' => 'Planilla - ' . $sector_data->nombre,
       'datos' => $this->planillas->get_by_id($planilla_id), 
+      'monitores' => $monitores, 
       'contenido' => $this->planilla_datos->get_by_planilla($planilla_id), 
       'enlace_agregar_dato' => base_url('operador/' . $sector_url . '/agregar/'), 
       'enlace_base_exportar_dato' => base_url('operador/' . $sector_url . '/pdf/'), 
