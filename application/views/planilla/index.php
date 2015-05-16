@@ -1,22 +1,19 @@
-<h1 class="text-center"><?php echo $titulo; ?></h1>
 <div class="container">
-<a class="btn btn-default" href="<?php echo $enlace_agregar; ?>">Agregar planilla <span class="glyphicon glyphicon-plus"></span></a>
-<table class="display table table-bordered" cellspacing="0" width="100%">
+<h1><?php echo $titulo; ?> <a class="btn btn-default pull-right" href="<?php echo $enlace_agregar; ?>">Agregar planilla <span class="glyphicon glyphicon-plus"></span></a></h1>
+<table class="table table-striped table-bordered table-responsive">
 <thead>
 <tr>
-<th class="text-center">Fecha Creación</th>
+<th class="col-md-2 text-center">Fecha Creación</th>
 <th class="text-center">Monitores</th>
-<th class="text-center">Ver Planilla</th>
-<th class="text-center">Editar</th>
+<th class="col-md-2 text-center">Acción</th>
 </tr>
 </thead>
 <tbody>
 <?php foreach($planillas as $planilla){ ?>
 <tr>
-<td height="1" class="text-center"><?php echo $planilla->fecha; ?></td>
+<td class="col-md-2 text-center"><?php echo $planilla->fecha; ?></td>
 <td class="text-center"><?php /*echo $planilla->monitores;*/ ?></td>
-<td class="text-center"><a href="<?php echo $enlace_base_ver . '/' . $planilla->id; ?>" class="btn btn-xs btn-primary glyphicon glyphicon-search"></a></td>
-<td class="text-center"><a href="<?php echo $enlace_base_editar . '/' . $planilla->id; ?>" class="glyphicon glyphicon-pencil"></a></td>
+<td class="col-md-2 text-center"><a href="<?php echo $enlace_base_ver . '/' . $planilla->id; ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-eye-open"></span> Ver</a> <a href="<?php echo $enlace_base_editar . '/' . $planilla->id; ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> Editar</a></td>
 </tr>
 <?php } ?>
 </tbody>

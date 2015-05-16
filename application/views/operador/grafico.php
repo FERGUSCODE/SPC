@@ -1,12 +1,15 @@
+<div class="container">
 <h1><?php echo $titulo . ' - ' . $fecha; ?></h1>
 <script>
 $(function () {
 <?php
+$maquinaLength = sizeof($datos);
+
 foreach ($datos as $maquina_id => $items) {
-  $maquinaLength = sizeof($items['valor']);
+  $valorLength = sizeof($items['valor']);
 ?>
   var container = document.createElement('DIV');
-  container.className = 'container';
+  container.className = 'col-md-<?php echo (int) (12 / $maquinaLength); ?>';
   $('.row')[0].appendChild(container);
   $(container).highcharts({
     title: {
@@ -32,16 +35,16 @@ foreach ($datos as $maquina_id => $items) {
     series: [{
       name: 'Máximo',
       colors: '#7798BF',
-      data: [<?php echo implode(',', array_fill(0, $maquinaLength, $items['max'])); ?>]
+      data: [<?php echo implode(',', array_fill(0, $valorLength, $items['max'])); ?>]
     }, {
       name: 'Medio',
-      data: [<?php echo implode(',', array_fill(0, $maquinaLength, ($items['min'] + $items['max']) / 2)); ?>]
+      data: [<?php echo implode(',', array_fill(0, $valorLength, ($items['min'] + $items['max']) / 2)); ?>]
     }, {
       name: '<?php echo $items['unidad']; ?>',
       data: [<?php echo implode(',', $items['valor']); ?>]
     }, {
       name: 'Minimo',
-      data: [<?php echo implode(',', array_fill(0, $maquinaLength, $items['min'])); ?>]
+      data: [<?php echo implode(',', array_fill(0, $valorLength, $items['min'])); ?>]
     }]
   });
 <?php } ?>
@@ -49,7 +52,6 @@ foreach ($datos as $maquina_id => $items) {
 </script>
 <script src="<?php echo base_url('contents/js/highcharts.js'); ?>"></script>
 <script src="<?php echo base_url('contents/js/gray.js'); ?>"></script>
-<div class="container">
 <div class="row">
 </div> 
 </div>

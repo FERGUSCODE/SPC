@@ -1,14 +1,18 @@
 <div class="container">
-<form class="form-signin" role="form" method="post" action="<?php echo $actionURL; ?>">
-<h2 class="form-signin-heading text-center"><?php echo $titulo; ?></h2><br>
-<p><label>Fecha</label> <input type="date" class="form-control" value="<?php echo $fecha; ?>" name="fecha" required>
-<h3>Monitores</h3>
+<h1><?php echo $titulo; ?></h1>
+<form class="row" action="<?php echo $actionURL; ?>" method="post" autocomplete="off">
+<div class="col-md-3 form-group"><h2>Fecha</h2><input type="date" id="fecha" class="input-lg form-control" value="<?php echo $fecha; ?>" name="fecha" required></div>
+<div class="col-md-9 form-group">
+<h2>Monitores</h2>
+<select multiple name="monitor[]" class="form-control" required>
 <?php
 for ($i = 0, $usuariosLength = sizeof($usuarios), $currentUsuario; $i < $usuariosLength; ++$i) {
   $currentUsuario = $usuarios[$i];
-  echo '<label class="checkbox-inline"><input type="checkbox" name="monitor[]" value="' . $currentUsuario->id . '" required> ' . $currentUsuario->nombre . '</label>';
+  echo '<option value="' . $currentUsuario->id . '"> ' . $currentUsuario->nombre . '</option>';
 }
 ?>
-<p><input class="btn btn-primary form-control" type="submit" value="<?php echo $submit_button_text; ?>">
+</select>
+</div>
+<div class="col-md-12"><input class="btn btn-primary btn-lg btn-block" type="submit" value="<?php echo $submit_button_text; ?>"></div>
 </form>
 </div>

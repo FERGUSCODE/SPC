@@ -114,8 +114,11 @@ class Planilla extends CI_Controller {
 
     if ($fecha) {
       $monitores = $this->input->post('monitor');
-      $query = $this->planillas->update($planilla_id, $sector_data->id, $fecha, $monitores);
-      $this->session->set_flashdata('msg', 'La planilla ha sido modificada correctamente');
+
+      if ($this->planillas->update($planilla_id, $sector_data->id, $fecha, $monitores)) {
+        $this->session->set_flashdata('msg', 'La planilla ha sido modificada correctamente');
+      }
+
       redirect('/planilla/' . $sector_url);
     }
 

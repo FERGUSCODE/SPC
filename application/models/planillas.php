@@ -90,7 +90,7 @@ class Planillas extends CI_Model {
     $this->db->delete('planilla_acceso', array('planilla_id' => $id));
     for ($i = 0, $cantidad = sizeof($usuarios); $i < $cantidad; ++$i) {
       $query = $this->db->insert('planilla_acceso', array(
-        'planilla_id' => $planilla_id,
+        'planilla_id' => $id,
         'usuario_id' => $usuarios[$i]
       ));
     }

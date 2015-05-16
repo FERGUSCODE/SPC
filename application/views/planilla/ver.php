@@ -1,19 +1,21 @@
 <div class="container">
-<table border="1" class="table table-bordered table-responsive">
-<tr><td colspan="5"><h1 class="text-center"><?php echo $titulo; ?></h1></td></tr>
+<h1><?php echo $titulo . ' ' . $datos->fecha; ?></h1>
+<table class="table table-striped table-bordered">
+<thead>
 <tr>
-<th class="text-center">Fecha</th>
 <th class="text-center">Monitores</th>
-<th class="text-center">Agregar Registro</th>
-<th class="text-center">Exportar</th>
-<th class="text-center">Gráfico</th>
+<th class="col-md-1 text-center">Agregar Registro</th>
+<th class="col-md-1 text-center">Exportar</th>
+<th class="col-md-1 text-center">Gráfico</th>
 </tr>
-<tr class="text-center"><td width="100"><?php echo $datos->fecha; ?></td>
-<td width="150" height="40"><?php /*echo $datos->monitores;*/ ?></td>
-<td width="70"><a href="<?php echo $enlace_agregar_dato; ?>" class="btn btn-default btn-sm text-center">Insertar Registro  <span class="glyphicon glyphicon-plus"></span></a></td>
-<td width="70"><a href="<?php echo $enlace_base_exportar_dato . '/' . $datos->id; ?>" class="btn btn-danger btn-sm text-center glyphicon glyphicon-file"><b> PDF</b></a></td>
-<td width="70"><a href="<?php echo $enlace_base_grafico_dato . '/' . $datos->id; ?>" class="btn btn-success btn-sm text-center glyphicon glyphicon-stats"><b> Ver</b></a></td>
+</thead>
+<tbody>
+<td><?php /*echo $datos->monitores;*/ ?></td>
+<td class="col-md-1 text-center"><a href="<?php echo $enlace_agregar_dato; ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> Insertar Registro</a></td>
+<td class="col-md-1 text-center"><a href="<?php echo $enlace_base_exportar_dato . '/' . $datos->id; ?>" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-file"></span> PDF</a></td>
+<td class="col-md-1 text-center"><a href="<?php echo $enlace_base_grafico_dato . '/' . $datos->id; ?>" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-stats"></span> Ver</a></td>
 </tr>
+</tbody>
 </table>
 <?php /*
 <table class="table table-bordered">

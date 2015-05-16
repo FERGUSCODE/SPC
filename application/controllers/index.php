@@ -11,6 +11,9 @@ class Index extends CI_Controller {
   }
   
   public function index(){
+    $successMsg = '';
+    $warningMsg = '';
+
     // Revisar si está ingresado
     if (!$this->session->userdata('id')) {
       // NO está ingresado, intentar ingresar
@@ -58,6 +61,13 @@ class Index extends CI_Controller {
         $this->load->model('planillas');
 
         $this->load->view('header');
+        $this->load->view('header-admin', array(
+          'enlace_base_planilla' => base_url('planilla/'), 
+          'sectores' => $this->planillas->get_all_sector(), 
+          'nombre' => $this->session->userdata('nombre'),
+          'successMsg' => $successMsg, 
+          'warningMsg' => $warningMsg
+        ));
         $this->load->view('portada', array(
           'enlace_base_planilla' => base_url('planilla/'),
           'sectores' => $this->planillas->get_all_sector()

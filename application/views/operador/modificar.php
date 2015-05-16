@@ -1,7 +1,6 @@
-<style>
-#reloj {font-size:36px;font-weight:700;text-align:center;}
-</style>
-<p id="reloj">00:00:00</p>
+<div class="container">
+<h1><?php echo $titulo; ?></h1>
+<p id="reloj" class="h2">00:00:00</p>
 <script>
 setInterval(function () {
   var tiempo = new Date();
@@ -14,17 +13,17 @@ setInterval(function () {
   document.getElementById('reloj').innerHTML = (pad + hora).slice(-2) + ':' + (pad + minuto).slice(-2) + ':' + (pad + segundo).slice(-2);
 }, 1000);
 </script>
-<h1 class="form-signin-heading text-center h3"><?php echo $titulo; ?></h1>
-<form name="form_reloj" class="form-signin" role="form" method="post" action="<?php echo $actionURL; ?>" autocomplete="off">
-<table class="table">
-<tr>
+<form class="row" action="<?php echo $actionURL; ?>" method="post" autocomplete="off">
 <?php
-for ($i = 0, $inputsLength = sizeof($inputs); $i < $inputsLength; ++$i) {
-  $currentInput = $inputs[$i];
-  echo '<td class="text-center"><label><span class=".control-label">' . $currentInput['nombre'] . '</span><input type="number" step="0.1" class="input-lg" name="value[' . $currentInput['maquina'] . ']" value="' . $currentInput['valor'] . '"></label></td>';
+if (!empty($inputs)) {
+  for ($i = 0, $inputsLength = sizeof($inputs), $row = (int) (12 / $inputsLength); $i < $inputsLength; ++$i) {
+    $currentInput = $inputs[$i];
+    echo '<div class="col-md-' . $row . ' form-group text-center"><h2>' . $currentInput['nombre'] . '</h2><input type="number" step="0.1" class="input-lg form-control" name="value[' . $currentInput['maquina'] . ']" value="' . $currentInput['valor'] . '"></div>';
+  }
+} else {
+  echo '<div class="col-md-12"><p class="alert alert-warning">No hay maquinas.</p></div>';
 }
 ?>
-</tr>
-</table>
-<p><input class="btn btn-primary btn-lg btn-block" type="submit" value="AGREGAR">
+<div class="col-md-12"><input class="btn btn-primary btn-lg btn-block" type="submit" value="AGREGAR"></div>
 </form>
+</div>
