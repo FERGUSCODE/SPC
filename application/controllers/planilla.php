@@ -80,6 +80,23 @@ class Planilla extends CI_Controller {
       array_push($monitores, $monitor_nombre[$i]->nombre);
     }
 
+    $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_id);
+
+    $datos = array();
+    for ($i = 0, $planillaDatosLength = sizeof($planilla_datos), $maquinaId; $i < $planillaDatosLength; ++$i) {
+      $maquinaId = $planilla_datos[$i]->maquina_id;
+
+      if (!isset($datos[$maquinaId]['nombre'])) {
+        $maquina_dato = $this->planillas->get_maquina_by_id($maquinaId);
+        $datos[$maquinaId]['nombre'] = $maquina_dato->nombre;
+        $datos[$maquinaId]['unidad'] = $maquina_dato->unidad;
+        $datos[$maquinaId]['datos'] = array();
+      }
+
+      $datos[$maquinaId]['datos'][$planilla_datos[$i]->id]['tiempo'] = $planilla_datos[$i]->tiempo;
+      $datos[$maquinaId]['datos'][$planilla_datos[$i]->id]['valor'] = $planilla_datos[$i]->valor;
+    }
+
     $this->load->view('header');
     $this->load->view('header-admin', array(
       'enlace_base_planilla' => base_url('planilla/'), 
@@ -90,10 +107,12 @@ class Planilla extends CI_Controller {
       'titulo' => 'Planilla - ' . $sector_data->nombre,
       'datos' => $this->planillas->get_by_id($planilla_id), 
       'monitores' => $monitores, 
-      'contenido' => $this->planilla_datos->get_by_planilla($planilla_id), 
+      'contenido' => $datos, 
       'enlace_agregar_dato' => base_url('operador/' . $sector_url . '/agregar/'), 
       'enlace_base_exportar_dato' => base_url('operador/' . $sector_url . '/pdf/'), 
-      'enlace_base_grafico_dato' => base_url('operador/' . $sector_url . '/grafico/')
+      'enlace_base_grafico_dato' => base_url('operador/' . $sector_url . '/grafico/'), 
+      'enlace_base_editar_dato' => base_url('operador/' . $sector_url . '/editar/'), 
+      'enlace_base_eliminar_dato' => base_url('operador/' . $sector_url . '/eliminar/')
     ));
   }
 

@@ -7,7 +7,7 @@ class Planilla_Datos extends CI_Model {
   }
 
   public function get_by_planilla($planilla_id) {
-    $this->db->select('usuario_id, maquina_id, valor, tiempo');
+    $this->db->select('id, usuario_id, maquina_id, valor, tiempo');
     $this->db->where('planilla_id', $planilla_id);
     $this->db->order_by('tiempo', 'asc');
     $query = $this->db->get('planilla_dato');

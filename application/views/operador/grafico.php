@@ -4,17 +4,17 @@
 $(function () {
 <?php
 $maquinaLength = sizeof($datos);
+$columnSize = $maquinaLength > 1 ? 6 : 12;
 
 foreach ($datos as $maquina_id => $items) {
   $valorLength = sizeof($items['valor']);
 ?>
   var container = document.createElement('DIV');
-  container.className = 'col-md-<?php echo (int) (12 / $maquinaLength); ?>';
+  container.className = 'col-md-<?php echo $columnSize; ?>';
   $('.row')[0].appendChild(container);
   $(container).highcharts({
     title: {
       text: '<?php echo $items['nombre']; ?>',
-      x: -20
     },
     xAxis: {
       categories: ['<?php echo implode("','", $items['tiempo']); ?>']
