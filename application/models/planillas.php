@@ -21,7 +21,7 @@ class Planillas extends CI_Model {
   }
 
   public function get_sector_data_by_url($sector_url) {
-    $this->db->select('id, planta_id, nombre');
+    $this->db->select('id, planta_id, nombre, medida');
     $this->db->where('url', $sector_url);
     $query = $this->db->get('base_planta_sector', 1);
     return $query->row(0);

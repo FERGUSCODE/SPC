@@ -1,9 +1,9 @@
 <style>
 #reloj {font-size:36px;font-weight:700;text-align:center;}
 </style>
-<p id="reloj"></p>
+<p id="reloj">00:00:00</p>
 <script>
-function Reloj() {
+setInterval(function () {
   var tiempo = new Date();
   var hora = tiempo.getHours();
   var minuto = tiempo.getMinutes();
@@ -12,17 +12,16 @@ function Reloj() {
   var pad = '0';
 
   document.getElementById('reloj').innerHTML = (pad + hora).slice(-2) + ':' + (pad + minuto).slice(-2) + ':' + (pad + segundo).slice(-2);
-}
-setInterval(Reloj, 1000);
+}, 1000);
 </script>
 <h1 class="form-signin-heading text-center h3"><?php echo $titulo; ?></h1>
-<form name="form_reloj" class="form-signin" role="form" method='post' action="<?php echo $actionURL; ?>" autocomplete="off">
+<form name="form_reloj" class="form-signin" role="form" method="post" action="<?php echo $actionURL; ?>" autocomplete="off">
 <table class="table">
 <tr>
 <?php
 for ($i = 0, $inputsLength = sizeof($inputs); $i < $inputsLength; ++$i) {
   $currentInput = $inputs[$i];
-  echo '<td class="text-center"><label><span class=".control-label">' . $currentInput['nombre'] . '</span><input type="number" step="0.1" class="input-lg" name="value[' . $currentInput['maquina'] . ']" value=""></label></td>';
+  echo '<td class="text-center"><label><span class=".control-label">' . $currentInput['nombre'] . '</span><input type="number" step="0.1" class="input-lg" name="value[' . $currentInput['maquina'] . ']" value="' . $currentInput['valor'] . '"></label></td>';
 }
 ?>
 </tr>

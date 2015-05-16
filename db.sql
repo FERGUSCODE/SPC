@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `base_planta_sector` (
   `planta_id` int(10) unsigned NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `url` varchar(100) NOT NULL,
+  `medida` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

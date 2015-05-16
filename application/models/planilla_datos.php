@@ -23,7 +23,7 @@ class Planilla_Datos extends CI_Model {
 
   public function insert($usuario_id, $datos) {
     // Fecha de ahora
-    $ahora = date('Y-m-d H:i:s', $this->input->server('REQUEST_TIME'));
+    $ahora = date('H:i:s', $this->input->server('REQUEST_TIME'));
 
     // Buffer para agregar datos
     $batch = array();
@@ -31,7 +31,7 @@ class Planilla_Datos extends CI_Model {
     // Cache para planilla_id
     $planilla_ids = array();
 
-    for ($i = 0, $datosLength = sizeof($datos); $i > $datosLength; ++$i) {
+    for ($i = 0, $datosLength = sizeof($datos); $i < $datosLength; ++$i) {
       // Revisar si hay cache
       if (!isset($planilla_ids[$datos[$i]['sector_id']])) {
         // Obtener id de planilla
@@ -39,14 +39,13 @@ class Planilla_Datos extends CI_Model {
         $this->db->join('planilla', 'planilla.id = planilla_acceso.planilla_id');
         $this->db->where('sector_id', $datos[$i]['sector_id']);
         $this->db->where('usuario_id', $usuario_id);
-        $this->db->order_by('tiempo', 'desc');
         $query = $this->db->get('planilla_acceso', 1);
 
         if ($query) {
           // Guardarlo para no tener que revisar a cada rato el db
           $planilla_ids[$datos[$i]['sector_id']] = $query->row(0)->id;
         } else {
-          return 'access_error';
+          return 0;
         }
       }
 

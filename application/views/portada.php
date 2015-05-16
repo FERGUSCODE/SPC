@@ -15,7 +15,7 @@ if ($sectores) {
 </div>
 <div class="row">
 <div class="col-md-4"></div>
-<div class="col-md-3 text-center"><a href="<?php echo base_url('graficos'); ?>"><img width="230" src="/spc/contents/img/grafico.png"></a></div>
+<div class="col-md-3 text-center"><a href="<?php echo base_url('graficos'); ?>"><img width="230" src="<?php echo base_url('contents/img/grafico.png'); ?>"></a></div>
 <div class="col-md-6"></div>
 </div>
 </div>

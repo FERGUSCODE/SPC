@@ -1,4 +1,4 @@
-<h1><?php echo $titulo; ?></h1>
+<h1><?php echo $titulo . ' - ' . $fecha; ?></h1>
 <script>
 $(function () {
 <?php
@@ -6,14 +6,15 @@ foreach ($datos as $maquina_id => $items) {
   $maquinaLength = sizeof($items['valor']);
 ?>
   var container = document.createElement('DIV');
-  document.body.appendChild(container);
-  container.highcharts({
+  container.className = 'container';
+  $('.row')[0].appendChild(container);
+  $(container).highcharts({
     title: {
-      text: 'Temperatura de Licor - Cocedor Nº<?php echo $current; ?>',
-      x: -20 //center
+      text: '<?php echo $items['nombre']; ?>',
+      x: -20
     },
     xAxis: {
-      categories: [<?php echo implode(',', $items['tiempo']); ?>]
+      categories: ['<?php echo implode("','", $items['tiempo']); ?>']
     },
     yAxis: {
       title: {
@@ -26,17 +27,17 @@ foreach ($datos as $maquina_id => $items) {
       }]
     },
     tooltip: {
-      valueSuffix: '°C'
+      valueSuffix: '<?php echo $items['unidad']; ?>'
     },
     series: [{
       name: 'Máximo',
-      colors: "#7798BF",
+      colors: '#7798BF',
       data: [<?php echo implode(',', array_fill(0, $maquinaLength, $items['max'])); ?>]
     }, {
       name: 'Medio',
       data: [<?php echo implode(',', array_fill(0, $maquinaLength, ($items['min'] + $items['max']) / 2)); ?>]
     }, {
-      name: <?php echo $items['unidad']; ?>,
+      name: '<?php echo $items['unidad']; ?>',
       data: [<?php echo implode(',', $items['valor']); ?>]
     }, {
       name: 'Minimo',
@@ -46,12 +47,9 @@ foreach ($datos as $maquina_id => $items) {
 <?php } ?>
 });
 </script>
-<script src="/spc/contents/js/highcharts.js"></script>
-<script src="/spc/contents/js/gray.js"></script>
+<script src="<?php echo base_url('contents/js/highcharts.js'); ?>"></script>
+<script src="<?php echo base_url('contents/js/gray.js'); ?>"></script>
 <div class="container">
 <div class="row">
-<div id="container1" style="min-width: 300x; height: 450px; margin: 0"></div>
-<div id="container3" style="min-width: 300x; height: 440px; margin: 0"></div>
-<div id="container4" style="min-width: 300x; height: 440px; margin: 0"></div>            
 </div> 
 </div>

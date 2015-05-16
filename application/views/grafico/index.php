@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>GRAFICOS</title>
-<link rel="stylesheet" href="/spc/contents/css/bootstrap_celeste.css">
-<script src="/spc/contents/js/jquery.min.js"></script>
+<link rel="stylesheet" href="<?php echo base_url('contents/css/bootstrap_celeste.css'); ?>">
+<script src="<?php echo base_url('contents/js/jquery.min.js'); ?>"></script>
 <?php
 $cocedor_ids = array(1, 3, 4);
 @$plantilla_id = $cocedor[0]->id;
@@ -67,10 +67,10 @@ echo "90,";} ?>]
 });
 </script>
 <?php } ?>
-<script src="/spc/contents/js/highcharts.js"></script>
-<script src="/spc/contents/js/gray.js"></script>
+<script src="<?php echo base_url('contents/js/highcharts.js'); ?>"></script>
+<script src="<?php echo base_url('contents/js/gray.js'); ?>"></script>
 <script>
-window.onload = function () {setTimeout(function () {location.replace('/spc/graficos/prensa')}, 7000)};
+window.onload = function () {setTimeout(function () {location.replace('<?php echo base_url('graficos/prensa')'); ?>}, 7000)};
 </script>
 <div class="container-fluid">
 <div class="row">

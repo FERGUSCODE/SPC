@@ -1,17 +1,13 @@
-<script src="/spc/contents/js/jquery.min.js"></script>
-<script src="/spc/contents/js/jquery.dataTables.min.js"> </script>
-<script src="/spc/contents/js/dataTables.bootstrap.js"> </script>
-<script src="/spc/contents/js/highcharts.js"></script>
-<script src="/spc/contents/js/bootstrap.min.js"></script>
+<script src="<?php echo base_url('contents/js/jquery.min.js'); ?>"></script>
+<script src="<?php echo base_url('contents/js/jquery.dataTables.min.js'); ?>"> </script>
+<script src="<?php echo base_url('contents/js/dataTables.bootstrap.js'); ?>"> </script>
+<script src="<?php echo base_url('contents/js/highcharts.js'); ?>"></script>
+<script src="<?php echo base_url('contents/js/bootstrap.min.js'); ?>"></script>
 <script>
 $(document).ready(function() {
   setTimeout(function() {
     $('.content').fadeOut(1500);
   },5000);
-
-  $('#cocedor').dataTable({
-    'order': [[0, 'desc']]
-  });
 });
 </script>
 <div class="navbar navbar-static-top navbar-inverse" role="navigation">
@@ -21,7 +17,7 @@ $(document).ready(function() {
 </div>
 <div class="collapse navbar-collapse">
 <ul class="nav navbar-nav">
-<li><a href="<?php echo base_url();?>">Inicio</a>
+<li><a href="<?php echo base_url(); ?>">Inicio</a>
 <?php
 if ($sectores) {
   for ($i = 0, $sectoresLength = sizeof($sectores); $i < $sectoresLength; ++$i) {
@@ -38,8 +34,13 @@ if ($sectores) {
 </div>
 </div>
 <?php 
-$msg = $this->session->flashdata('msg');
-if($msg){
-  echo '<div class="content alert alert-success" id="registroCorrecto">' . $msg . '</div>';
+$successMsg = isset($successMsg) ? $successMsg : $this->session->flashdata('successMsg');
+if ($successMsg) {
+  echo '<div class="content alert alert-success">' . $successMsg . '</div>';
+}
+
+$warningMsg = isset($warningMsg) ? $warningMsg : $this->session->flashdata('warningMsg');
+if ($warningMsg) {
+  echo '<div class="content alert alert-warning">' . $warningMsg . '</div>';
 }
 ?>

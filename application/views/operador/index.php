@@ -3,7 +3,7 @@ body {background: #ecf0f1}
 .container {background: #ecf0f1}
 </style>
 <div align="center" class="container">
-<a href="<?php echo $enlace_salir; ?>"><img src="/spc/contents/img/salir.png" width="150"></img></a>
+<a href="<?php echo $enlace_salir; ?>"><img src="<?php echo base_url('contents/img/salir.png'); ?>" width="150"></img></a>
 <h1 class="text-center panel panel-primary"><?php echo $titulo; ?></h1>
 <?php
 for ($i = 0, $botonesLength = sizeof($botones); $i < $botonesLength; ++$i) {
