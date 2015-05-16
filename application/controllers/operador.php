@@ -106,7 +106,6 @@ class Operador extends CI_Controller {
     }
     $this->load->view('operador/modificar', array(
       'titulo' => 'Agregar ' . $sector_data->medida, 
-      'actionURL' => '/operador/'. $sector_url .'/agregar',
       'inputs' => $inputs
     ));
   }
@@ -166,7 +165,6 @@ class Operador extends CI_Controller {
     ));
     $this->load->view('operador/modificar', array(
       'titulo' => 'Editar ' . $sector_data->medida, 
-      'actionURL' => '/operador/'. $sector_url .'/editar/' . $dato_id,
       'inputs' => array(
         array(
           'nombre' => $maquina_data->nombre, 

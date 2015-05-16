@@ -13,7 +13,7 @@ setInterval(function () {
   document.getElementById('reloj').innerHTML = (pad + hora).slice(-2) + ':' + (pad + minuto).slice(-2) + ':' + (pad + segundo).slice(-2);
 }, 1000);
 </script>
-<form class="row" action="<?php echo $actionURL; ?>" method="post" autocomplete="off">
+<form class="row" action="<?php echo current_url(); ?>" method="post" autocomplete="off">
 <?php
 if (!empty($inputs)) {
   for ($i = 0, $inputsLength = sizeof($inputs), $row = (int) (12 / $inputsLength); $i < $inputsLength; ++$i) {
