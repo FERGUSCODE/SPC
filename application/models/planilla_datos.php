@@ -39,6 +39,7 @@ class Planilla_Datos extends CI_Model {
         $this->db->join('planilla', 'planilla.id = planilla_acceso.planilla_id');
         $this->db->where('sector_id', $datos[$i]['sector_id']);
         $this->db->where('usuario_id', $usuario_id);
+        $this->db->order_by('fecha', 'desc');
         $query = $this->db->get('planilla_acceso', 1);
 
         if ($query) {
