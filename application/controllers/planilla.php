@@ -50,15 +50,15 @@ class Planilla extends CI_Controller {
     if ($sector_data) {
       $this->load->view('header');
       $this->load->view('header-admin', array(
-        'enlace_base_planilla' => base_url('planilla/'), 
+        'enlace_base_planilla' => base_url('/planilla/'), 
         'sectores' => $this->planillas->get_all_sector(), 
         'nombre' => $this->session->userdata('nombre')
       ));
       $this->load->view('planilla/index', array(
         'titulo' => 'Modulo de ' . $sector_data->nombre,
-        'enlace_agregar' => base_url('planilla/' . $sector_url . '/agregar'), 
-        'enlace_base_ver' => base_url('planilla/' . $sector_url . '/ver/'), 
-        'enlace_base_editar' => base_url('planilla/' . $sector_url . '/editar/'), 
+        'enlace_agregar' => base_url('/planilla/' . $sector_url . '/agregar'), 
+        'enlace_base_ver' => base_url('/planilla/' . $sector_url . '/ver/'), 
+        'enlace_base_editar' => base_url('/planilla/' . $sector_url . '/editar/'), 
         'planillas' => $planilla_data
       ));
     } else {
@@ -99,7 +99,7 @@ class Planilla extends CI_Controller {
 
     $this->load->view('header');
     $this->load->view('header-admin', array(
-      'enlace_base_planilla' => base_url('planilla/'), 
+      'enlace_base_planilla' => base_url('/planilla/'), 
       'sectores' => $this->planillas->get_all_sector(), 
       'nombre' => $this->session->userdata('nombre')
     ));
@@ -108,11 +108,11 @@ class Planilla extends CI_Controller {
       'datos' => $this->planillas->get_by_id($planilla_id), 
       'monitores' => $monitores, 
       'contenido' => $datos, 
-      'enlace_agregar_dato' => base_url('operador/' . $sector_url . '/agregar/'), 
-      'enlace_base_exportar_dato' => base_url('operador/' . $sector_url . '/pdf/'), 
-      'enlace_base_grafico_dato' => base_url('operador/' . $sector_url . '/grafico/'), 
-      'enlace_base_editar_dato' => base_url('operador/' . $sector_url . '/editar/'), 
-      'enlace_base_eliminar_dato' => base_url('operador/' . $sector_url . '/eliminar/')
+      'enlace_agregar_dato' => base_url('/operador/' . $sector_url . '/agregar/'), 
+      'enlace_base_exportar_dato' => base_url('/planilla/' . $sector_url . '/pdf/'), 
+      'enlace_base_grafico_dato' => base_url('/operador/' . $sector_url . '/grafico/'), 
+      'enlace_base_editar_dato' => base_url('/operador/' . $sector_url . '/editar/'), 
+      'enlace_base_eliminar_dato' => base_url('/operador/' . $sector_url . '/eliminar/')
     ));
   }
 
@@ -131,12 +131,12 @@ class Planilla extends CI_Controller {
 
     $this->load->view('header');
     $this->load->view('header-admin', array(
-      'enlace_base_planilla' => base_url('planilla/'), 
+      'enlace_base_planilla' => base_url('/planilla/'), 
       'sectores' => $this->planillas->get_all_sector(), 
       'nombre' => $this->session->userdata('nombre')
     ));
     $this->load->view('planilla/modificar', array(
-      'actionURL' => base_url('planilla/' . $sector_url . '/agregar'),
+      'actionURL' => base_url('/planilla/' . $sector_url . '/agregar'),
       'titulo' => 'Crear planilla para ' . $sector_data->nombre,
       'fecha' => date('Y-m-d'), 
       'usuarios' => $this->usuario->get_all(), 
@@ -167,16 +167,63 @@ class Planilla extends CI_Controller {
 
     $this->load->view('header');
     $this->load->view('header-admin', array(
-      'enlace_base_planilla' => base_url('planilla/'), 
+      'enlace_base_planilla' => base_url('/planilla/'), 
       'sectores' => $this->planillas->get_all_sector(), 
       'nombre' => $this->session->userdata('nombre')
     ));
     $this->load->view('planilla/modificar',array(
-      'actionURL' => base_url('planilla/' . $sector_url . '/editar/' . $planilla_id),
+      'actionURL' => base_url('/planilla/' . $sector_url . '/editar/' . $planilla_id),
       'titulo' => 'Editar planilla de ' . $sector_data->nombre,
       'fecha' => date('Y-m-d'), 
       'usuarios' => $this->usuario->get_all(), 
       'submit_button_text' => 'Editar Planilla'
     ));
+  }
+
+  public function pdf($sector_url, $planilla_id = 0) {
+    // Prevenir ser accedido por no administradores
+    if (!$this->session->userdata('isAdmin')) {
+      redirect('/');
+    }
+
+    // Evitar de haber ingresado sin el id de la planilla
+    if (!$planilla_id) {
+      redirect('/planilla/' . $sector_url);
+    }
+
+    $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
+    $monitor_nombre = $this->planillas->get_usuarios_planilla($planilla_id);
+
+    $monitores = array();
+    for ($i = 0, $monitorDataLength = sizeof($monitor_nombre); $i < $monitorDataLength; ++$i) {
+      array_push($monitores, $monitor_nombre[$i]->nombre);
+    }
+
+    $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_id);
+
+    $datos = array();
+    for ($i = 0, $planillaDatosLength = sizeof($planilla_datos), $maquinaId; $i < $planillaDatosLength; ++$i) {
+      $maquinaId = $planilla_datos[$i]->maquina_id;
+
+      if (!isset($datos[$maquinaId]['nombre'])) {
+        $maquina_dato = $this->planillas->get_maquina_by_id($maquinaId);
+        $datos[$maquinaId]['nombre'] = $maquina_dato->nombre;
+        $datos[$maquinaId]['unidad'] = $maquina_dato->unidad;
+        $datos[$maquinaId]['datos'] = array();
+      }
+
+      $datos[$maquinaId]['datos'][$planilla_datos[$i]->id]['tiempo'] = $planilla_datos[$i]->tiempo;
+      $datos[$maquinaId]['datos'][$planilla_datos[$i]->id]['valor'] = $planilla_datos[$i]->valor;
+    }
+
+    error_reporting(0);
+    $this->load->library('MPDF54/MPDF');
+    $this->mpdf->WriteHTML($this->load->view('planilla/pdf', array(
+      'titulo' => 'Planilla - ' . $sector_data->nombre,
+      'datos' => $this->planillas->get_by_id($planilla_id), 
+      'monitores' => $monitores, 
+      'contenido' => $datos
+    ), true));
+    $this->mpdf->Output($sector_data->nombre . '.pdf','I');
   }
 }

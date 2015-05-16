@@ -64,7 +64,7 @@ if (!defined('PHP_VERSION_ID')) {
 $test = pack("d", 134455.474557333333666);
 define("_DSIZE", strlen($test));
 
-class mPDF
+class MPDF
 {
 
 ///////////////////////////////
