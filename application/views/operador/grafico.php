@@ -1,3 +1,6 @@
+<?php if (!empty($siguiente_url)) { ?>
+<script>window.onload = function () {setTimeout(function () {location.replace('<?php echo base_url($siguiente_url); ?>')}, 7000)};</script>
+<?php } ?>
 <div class="container">
 <h1><?php echo $titulo . ' - ' . $fecha; ?></h1>
 <script>

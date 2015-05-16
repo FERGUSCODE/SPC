@@ -44,6 +44,7 @@ $route['logout'] = 'index/logout';
 $route['planilla/(\w+)'] = 'planilla/index/$1';
 $route['planilla/(\w+)/(\w+)[/]*(\d+)*'] = 'planilla/$2/$1/$3';
 $route['operador/(\w+)/(\w+)[/]*(\d+)*'] = 'operador/$2/$1/$3';
+$route['graficos/(\w+)'] = 'graficos/index/$1';
 
 
 /* End of file routes.php */

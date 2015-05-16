@@ -5,51 +5,66 @@ class Graficos extends CI_Controller {
     parent::__construct();
     $this->load->helper('url');
 
-    $this->load->helper('array');
-    //session
+    // session
     $this->load->library('session');
-    if($this->session->userdata('login') !=true){
-      redirect('usuarios');
-    }	
+    if (!$this->session->userdata('id')) {
+      redirect('/');
+    }
+
+    $this->load->model('planillas');
+    $this->load->model('planilla_datos');
   }
   
-  public function index(){
-    $usuario=$this->session->userdata('usuario');
-    $query1 = $this->planilla_cocedor->get_all();
-    $query2 = $this->planilla_secador->get_all();
-    $query3 = $this->planilla_prensa->get_all();
-    $query4 = $this->planilla_psconcentrado->get_all();
-    $data = array('cocedor'=>$query1,'secador'=>$query2,'prensa'=>$query3,'psconcentrado'=>$query4);
-    $this->load->view("grafico/index",$data);
-  }
+  public function index($sector_url = '') {
+    $all_sector_data = $this->planillas->get_all_sector();
 
-  public function prensa(){
-    $usuario=$this->session->userdata('usuario');
-    $query1 = $this->planilla_cocedor->get_all();
-    $query2 = $this->planilla_secador->get_all();
-    $query3 = $this->planilla_prensa->get_all();
-    $query4 = $this->planilla_psconcentrado->get_all();
-    $data = array('cocedor'=>$query1,'secador'=>$query2,'prensa'=>$query3,'psconcentrado'=>$query4);
-    $this->load->view("grafico/prensa",$data);
-  }
+    if (empty($sector_url)) {
+      $sector_url = $all_sector_data[0]->url;
+    }
 
-  public function secador(){
-    $usuario=$this->session->userdata('usuario');
-    $query1 = $this->planilla_cocedor->get_all();
-    $query2 = $this->planilla_secador->get_all();
-    $query3 = $this->planilla_prensa->get_all();
-    $query4 = $this->planilla_psconcentrado->get_all();
-    $data = array('cocedor'=>$query1,'secador'=>$query2,'prensa'=>$query3,'psconcentrado'=>$query4);
-    $this->load->view("grafico/secador",$data);
-  }
+    $siguiente_url = '';
+    for ($i = 0, $sectorLength = sizeof($all_sector_data); $i < $sectorLength; ++$i) {
+      if ($sector_url == $all_sector_data[$i]->url) {
+        if ($i == $sectorLength - 1) {
+          $i = -1;
+        }
 
-  public function psconcentrado(){
-    $usuario=$this->session->userdata('usuario');
-    $query1 = $this->planilla_cocedor->get_all();
-    $query2 = $this->planilla_secador->get_all();
-    $query3 = $this->planilla_prensa->get_all();
-    $query4 = $this->planilla_psconcentrado->get_all();
-    $data = array('cocedor'=>$query1,'secador'=>$query2,'prensa'=>$query3,'psconcentrado'=>$query4);
-    $this->load->view("grafico/psconcentrado",$data);
+        $siguiente_url = $all_sector_data[$i + 1]->url;
+        break;
+      }
+    }
+
+    $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
+
+    $planilla_id = $this->planillas->get_by_sector_url($sector_url)[0]->id;
+
+    $planilla_data = $this->planillas->get_by_id($planilla_id);
+    $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_id);
+
+    $datos = array();
+    for ($i = 0, $planillaDatosLength = sizeof($planilla_datos), $maquinaId; $i < $planillaDatosLength; ++$i) {
+      $maquinaId = $planilla_datos[$i]->maquina_id;
+
+      if (!isset($datos[$maquinaId]['min'])) {
+        $maquina_dato = $this->planillas->get_maquina_by_id($maquinaId);
+        $datos[$maquinaId]['nombre'] = $maquina_dato->nombre;
+        $datos[$maquinaId]['min'] = $maquina_dato->min;
+        $datos[$maquinaId]['max'] = $maquina_dato->max;
+        $datos[$maquinaId]['unidad'] = $maquina_dato->unidad;
+        $datos[$maquinaId]['tiempo'] = array();
+        $datos[$maquinaId]['valor'] = array();
+      }
+
+      array_push($datos[$maquinaId]['tiempo'], $planilla_datos[$i]->tiempo);
+      array_push($datos[$maquinaId]['valor'], $planilla_datos[$i]->valor);
+    }
+
+    $this->load->view('header');
+    $this->load->view('operador/grafico', array(
+      'titulo' => $sector_data->medida, 
+      'fecha' => $planilla_data->fecha,
+      'datos' => $datos, 
+      'siguiente_url' => 'graficos/' . $siguiente_url
+    ));
   }
 }

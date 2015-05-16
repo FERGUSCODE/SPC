@@ -50,15 +50,15 @@ class Planilla extends CI_Controller {
     if ($sector_data) {
       $this->load->view('header');
       $this->load->view('header-admin', array(
-        'enlace_base_planilla' => base_url('/planilla/'), 
+        'enlace_base_planilla' => 'planilla/', 
         'sectores' => $this->planillas->get_all_sector(), 
         'nombre' => $this->session->userdata('nombre')
       ));
       $this->load->view('planilla/index', array(
         'titulo' => 'Modulo de ' . $sector_data->nombre,
-        'enlace_agregar' => base_url('/planilla/' . $sector_url . '/agregar'), 
-        'enlace_base_ver' => base_url('/planilla/' . $sector_url . '/ver/'), 
-        'enlace_base_editar' => base_url('/planilla/' . $sector_url . '/editar/'), 
+        'enlace_agregar' => 'planilla/' . $sector_url . '/agregar', 
+        'enlace_base_ver' => 'planilla/' . $sector_url . '/ver/', 
+        'enlace_base_editar' => 'planilla/' . $sector_url . '/editar/', 
         'planillas' => $planilla_data
       ));
     } else {
@@ -99,7 +99,7 @@ class Planilla extends CI_Controller {
 
     $this->load->view('header');
     $this->load->view('header-admin', array(
-      'enlace_base_planilla' => base_url('/planilla/'), 
+      'enlace_base_planilla' => 'planilla/', 
       'sectores' => $this->planillas->get_all_sector(), 
       'nombre' => $this->session->userdata('nombre')
     ));
@@ -108,11 +108,11 @@ class Planilla extends CI_Controller {
       'datos' => $this->planillas->get_by_id($planilla_id), 
       'monitores' => $monitores, 
       'contenido' => $datos, 
-      'enlace_agregar_dato' => base_url('/operador/' . $sector_url . '/agregar/'), 
-      'enlace_base_exportar_dato' => base_url('/planilla/' . $sector_url . '/pdf/'), 
-      'enlace_base_grafico_dato' => base_url('/operador/' . $sector_url . '/grafico/'), 
-      'enlace_base_editar_dato' => base_url('/operador/' . $sector_url . '/editar/'), 
-      'enlace_base_eliminar_dato' => base_url('/operador/' . $sector_url . '/eliminar/')
+      'enlace_agregar_dato' => 'operador/' . $sector_url . '/agregar/', 
+      'enlace_base_exportar_dato' => 'planilla/' . $sector_url . '/pdf/', 
+      'enlace_base_grafico_dato' => 'operador/' . $sector_url . '/grafico/', 
+      'enlace_base_editar_dato' => 'operador/' . $sector_url . '/editar/', 
+      'enlace_base_eliminar_dato' => 'operador/' . $sector_url . '/eliminar/'
     ));
   }
 
@@ -131,12 +131,11 @@ class Planilla extends CI_Controller {
 
     $this->load->view('header');
     $this->load->view('header-admin', array(
-      'enlace_base_planilla' => base_url('/planilla/'), 
+      'enlace_base_planilla' => 'planilla/', 
       'sectores' => $this->planillas->get_all_sector(), 
       'nombre' => $this->session->userdata('nombre')
     ));
     $this->load->view('planilla/modificar', array(
-      'actionURL' => base_url('/planilla/' . $sector_url . '/agregar'),
       'titulo' => 'Crear planilla para ' . $sector_data->nombre,
       'fecha' => date('Y-m-d'), 
       'usuarios' => $this->usuario->get_all(), 
@@ -150,11 +149,16 @@ class Planilla extends CI_Controller {
       redirect('/planilla/' . $sector_url);
     }
 
+    $planilla_dato = $this->planillas->get_by_id($planilla_id);
+
+    if ($planilla_dato->fecha != date('Y-m-d')) {
+      redirect('/planilla/' . $sector_url);
+    }
+
     $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
 
     // Ver si ha enviado algunos datos
     $fecha = $this->input->post('fecha'); 
-
     if ($fecha) {
       $monitores = $this->input->post('monitor');
 
@@ -165,16 +169,16 @@ class Planilla extends CI_Controller {
       redirect('/planilla/' . $sector_url);
     }
 
+
     $this->load->view('header');
     $this->load->view('header-admin', array(
-      'enlace_base_planilla' => base_url('/planilla/'), 
+      'enlace_base_planilla' => 'planilla/', 
       'sectores' => $this->planillas->get_all_sector(), 
       'nombre' => $this->session->userdata('nombre')
     ));
     $this->load->view('planilla/modificar',array(
-      'actionURL' => base_url('/planilla/' . $sector_url . '/editar/' . $planilla_id),
       'titulo' => 'Editar planilla de ' . $sector_data->nombre,
-      'fecha' => date('Y-m-d'), 
+      'fecha' => $planilla_dato->fecha, 
       'usuarios' => $this->usuario->get_all(), 
       'submit_button_text' => 'Editar Planilla'
     ));

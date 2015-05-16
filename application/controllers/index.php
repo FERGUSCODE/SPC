@@ -51,7 +51,6 @@ class Index extends CI_Controller {
       }
 
       $data['usuarios'] = $this->usuario->get_all();
-      $data['actionURL'] = base_url();
 
       // Mostrar página
       $this->load->view('header');
@@ -62,14 +61,14 @@ class Index extends CI_Controller {
 
         $this->load->view('header');
         $this->load->view('header-admin', array(
-          'enlace_base_planilla' => base_url('planilla/'), 
+          'enlace_base_planilla' => 'planilla/', 
           'sectores' => $this->planillas->get_all_sector(), 
           'nombre' => $this->session->userdata('nombre'),
           'successMsg' => $successMsg, 
           'warningMsg' => $warningMsg
         ));
         $this->load->view('portada', array(
-          'enlace_base_planilla' => base_url('planilla/'),
+          'enlace_base_planilla' => 'planilla/',
           'sectores' => $this->planillas->get_all_sector()
         ));
       } else {

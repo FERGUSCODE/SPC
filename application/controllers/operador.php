@@ -28,33 +28,20 @@ class Operador extends CI_Controller {
     $botones = array();
 
     for ($i = 0, $datosLength = sizeof($sector_access_data); $i < $datosLength; ++$i) {
-      // Elegir título según tipo
-      switch ($sector_access_data[$i]->url) {
-        case 'cocedor':
-          $titulo = 'Agregar temperaturas';
-          break;
-        case 'prensa':
-          $titulo = 'Agregar Presión hidráulica (BAR)';
-          break;
-        case 'evaporador':
-          $titulo = 'Agregar % Solido Concentrado';
-          break;
-        case 'secador':
-          $titulo = 'Agregar % Fluido Termico';
-          break;
-      }
+      if ($sector_access_data[$i]->fecha == date('Y-m-d')) {
+        $sector_data = $this->planillas->get_sector_data_by_url($sector_access_data[$i]->url);
 
-      // Ponerlo en buffer
-      array_push($botones, array(
-        'titulo' => $titulo, 
-        'fecha' => $sector_access_data[$i]->fecha, 
-        'enlace_agregar_dato' => base_url('operador/' . $sector_access_data[$i]->url . '/agregar')
-      ));
+        // Ponerlo en buffer
+        array_push($botones, array(
+          'titulo' => 'Agregar ' . $sector_data->medida, 
+          'fecha' => $sector_access_data[$i]->fecha, 
+          'enlace_agregar_dato' => 'operador/' . $sector_access_data[$i]->url . '/agregar'
+        ));
+      }
     }
 
     $this->load->view('header');
     $this->load->view('operador/index', array(
-      'enlace_salir' => base_url('logout'),
       'titulo' => 'Operador',
       'botones' => $botones
     ));
@@ -110,7 +97,7 @@ class Operador extends CI_Controller {
     $this->load->view('header');
     if ($this->session->userdata('isAdmin')) {
       $this->load->view('header-admin', array(
-        'enlace_base_planilla' => base_url('planilla/'), 
+        'enlace_base_planilla' => 'planilla/', 
         'sectores' => $this->planillas->get_all_sector(), 
         'nombre' => $this->session->userdata('nombre'),
         'successMsg' => $successMsg, 
@@ -119,7 +106,7 @@ class Operador extends CI_Controller {
     }
     $this->load->view('operador/modificar', array(
       'titulo' => 'Agregar ' . $sector_data->medida, 
-      'actionURL' => base_url('/operador/'. $sector_url .'/agregar'),
+      'actionURL' => '/operador/'. $sector_url .'/agregar',
       'inputs' => $inputs
     ));
   }
@@ -171,7 +158,7 @@ class Operador extends CI_Controller {
     // Mostrar interfaz
     $this->load->view('header');
     $this->load->view('header-admin', array(
-      'enlace_base_planilla' => base_url('planilla/'), 
+      'enlace_base_planilla' => 'planilla/', 
       'sectores' => $this->planillas->get_all_sector(), 
       'nombre' => $this->session->userdata('nombre'), 
       'successMsg' => $successMsg,
@@ -179,7 +166,7 @@ class Operador extends CI_Controller {
     ));
     $this->load->view('operador/modificar', array(
       'titulo' => 'Editar ' . $sector_data->medida, 
-      'actionURL' => base_url('/operador/'. $sector_url .'/editar/' . $dato_id),
+      'actionURL' => '/operador/'. $sector_url .'/editar/' . $dato_id,
       'inputs' => array(
         array(
           'nombre' => $maquina_data->nombre, 
@@ -210,9 +197,6 @@ class Operador extends CI_Controller {
       redirect('/');
     }
 
-    // Buffer de mensaje
-    $msg = '';
-
     $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
 
     $planilla_data = $this->planillas->get_by_id($planilla_id);
@@ -239,16 +223,15 @@ class Operador extends CI_Controller {
     $this->load->view('header');
     if ($this->session->userdata('isAdmin')) {
       $this->load->view('header-admin', array(
-        'enlace_base_planilla' => base_url('planilla/'), 
+        'enlace_base_planilla' => 'planilla/', 
         'sectores' => $this->planillas->get_all_sector(), 
-        'nombre' => $this->session->userdata('nombre'), 
-        'msg' => $msg
+        'nombre' => $this->session->userdata('nombre')
       ));
     }
-    $this->load->view('/operador/grafico', array(
+    $this->load->view('operador/grafico', array(
       'titulo' => $sector_data->medida, 
-      'fecha' => $planilla_data->fecha,
-      'datos' => $datos,
+      'fecha' => $planilla_data->fecha, 
+      'datos' => $datos
     ));
   }
 }

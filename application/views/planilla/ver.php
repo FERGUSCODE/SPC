@@ -10,10 +10,10 @@
 </tr>
 </thead>
 <tbody>
-<td><?php echo implode(', ', $monitores); ?></td>
-<td class="col-md-1 text-center"><a href="<?php echo $enlace_agregar_dato; ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> Insertar Registro</a>
-<td class="col-md-1 text-center"><a href="<?php echo $enlace_base_exportar_dato . '/' . $datos->id; ?>" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-file"></span> PDF</a>
-<td class="col-md-1 text-center"><a href="<?php echo $enlace_base_grafico_dato . '/' . $datos->id; ?>" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-stats"></span> Ver</a>
+<td><?php echo implode(', ', $monitores); $editable = $datos->fecha == date('Y-m-d'); ?></td>
+<td class="col-md-1 text-center"><a href="<?php echo $editable ? base_url($enlace_agregar_dato) : ''; ?>" class="btn btn-default btn-sm<?php echo $editable ? '' : ' disabled'; ?>"><span class="glyphicon glyphicon-plus"></span> Insertar Registro</a>
+<td class="col-md-1 text-center"><a href="<?php echo base_url($enlace_base_exportar_dato . $datos->id); ?>" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-file"></span> PDF</a>
+<td class="col-md-1 text-center"><a href="<?php echo base_url($enlace_base_grafico_dato . $datos->id); ?>" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-stats"></span> Ver</a>
 </tr>
 </tbody>
 </table>
@@ -46,8 +46,8 @@ if ($contenido){
 <tr>
 <td class="text-center"><?php echo $dato['tiempo']; ?>
 <td class="text-center"><?php echo $dato['valor'] . $items['unidad']; ?>
-<td class="text-center"><a href="<?php echo $enlace_base_editar_dato . '/' . $dato_id; ?>" class="glyphicon glyphicon-pencil"></a></td>
-<td class="text-center"><a onclick="return confirm('esta seguro de borrar esta hora?');" href="<?php echo $enlace_base_eliminar_dato . '/' . $dato_id; ?>" class="glyphicon glyphicon-trash"></a></td></tr>
+<td class="text-center"><a href="<?php echo base_url($enlace_base_editar_dato . $dato_id); ?>" class="glyphicon glyphicon-pencil"></a></td>
+<td class="text-center"><a onclick="return confirm('esta seguro de borrar esta hora?');" href="<?php echo base_url($enlace_base_eliminar_dato . $dato_id); ?>" class="glyphicon glyphicon-trash"></a></td></tr>
 </tr>
 <?php } ?>
 </tbody>

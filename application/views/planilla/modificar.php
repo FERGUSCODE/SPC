@@ -1,6 +1,6 @@
 <div class="container">
 <h1><?php echo $titulo; ?></h1>
-<form class="row" action="<?php echo $actionURL; ?>" method="post" autocomplete="off">
+<form class="row" action="<?php echo current_url(); ?>" method="post" autocomplete="off">
 <div class="col-md-3 form-group"><h2>Fecha</h2><input type="date" id="fecha" class="input-lg form-control" value="<?php echo $fecha; ?>" name="fecha" required></div>
 <div class="col-md-9 form-group">
 <h2>Monitores</h2>

@@ -5,7 +5,7 @@ if (isset($msg)) {
 ?>
 <div class="container">
 <h1 class="text-center"><img width="100" height="100" src="<?php echo base_url('contents/img/logo.jpg'); ?>"> CORPESCA S.A - SPC</h1>
-<form action="<?php echo $actionURL; ?>" method="post" autocomplete="off">
+<form action="<?php echo current_url(); ?>" method="post" autocomplete="off">
 <div class="form-group">
 <label class="sr-only" for="usuario">Usuario</label>
 <select id="usuario" name="usuario" class="form-control input-lg" required>
