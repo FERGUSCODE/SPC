@@ -10,7 +10,7 @@
 </thead>
 <tbody>
 <?php
-foreach($planillas as $planilla){
+foreach ($planillas as $planilla) {
   $editable = $planilla['fecha'] == date('Y-m-d');
 ?>
 <tr>

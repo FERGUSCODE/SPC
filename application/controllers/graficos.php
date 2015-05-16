@@ -36,10 +36,8 @@ class Graficos extends CI_Controller {
 
     $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
 
-    $planilla_id = $this->planillas->get_by_sector_url($sector_url)[0]->id;
-
-    $planilla_data = $this->planillas->get_by_id($planilla_id);
-    $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_id);
+    $planilla_data = $this->planillas->get_by_sector_url($sector_url)[0];
+    $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_data->id);
 
     $datos = array();
     for ($i = 0, $planillaDatosLength = sizeof($planilla_datos), $maquinaId; $i < $planillaDatosLength; ++$i) {
