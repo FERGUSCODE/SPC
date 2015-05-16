@@ -36,7 +36,8 @@ class Graficos extends CI_Controller {
 
     $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
 
-    $planilla_data = $this->planillas->get_by_sector_url($sector_url)[0];
+    $planilla_data = $this->planillas->get_by_sector_url($sector_url, 1);
+    $planilla_data = $planilla_data[0];
     $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_data->id);
 
     $datos = array();

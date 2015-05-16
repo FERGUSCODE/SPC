@@ -35,14 +35,14 @@ class Planillas extends CI_Model {
     return $query->row(0);
   }
 
-  public function get_by_sector_url($sector_url) {
+  public function get_by_sector_url($sector_url, $limit = null) {
     $this->db->select('planilla.id, base.nombre, base_planta.nombre, base_planta_sector.nombre, fecha');
     $this->db->join('base_planta_sector', 'base_planta_sector.id = planilla.sector_id');
     $this->db->join('base_planta', 'base_planta.id = base_planta_sector.planta_id');
     $this->db->join('base', 'base.id = base_planta.base_id');
     $this->db->where('base_planta_sector.url', $sector_url);
     $this->db->order_by('fecha', 'desc');
-    $query = $this->db->get('planilla');
+    $query = $this->db->get('planilla', $limit);
     return $query->result();
   }
 
