@@ -33,11 +33,11 @@ class Planilla extends CI_Controller {
 
     $planilla_data = array();
     foreach ($planillas as $planilla) {
-      $monitor_nombre = $this->planillas->get_usuarios_planilla($planilla->id);
+      $monitor_data = $this->planillas->get_usuarios_planilla($planilla->id);
 
       $monitores = array();
-      for ($i = 0, $monitorDataLength = sizeof($monitor_nombre); $i < $monitorDataLength; ++$i) {
-        array_push($monitores, $monitor_nombre[$i]->nombre);
+      for ($i = 0, $monitorDataLength = sizeof($monitor_data); $i < $monitorDataLength; ++$i) {
+        $monitores[$monitor_data[$i]->id] = $monitor_data[$i]->nombre;
       }
 
       array_push($planilla_data, array(
@@ -73,11 +73,11 @@ class Planilla extends CI_Controller {
     }
 
     $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
-    $monitor_nombre = $this->planillas->get_usuarios_planilla($planilla_id);
+    $monitor_data = $this->planillas->get_usuarios_planilla($planilla_id);
 
     $monitores = array();
-    for ($i = 0, $monitorDataLength = sizeof($monitor_nombre); $i < $monitorDataLength; ++$i) {
-      array_push($monitores, $monitor_nombre[$i]->nombre);
+    for ($i = 0, $monitorDataLength = sizeof($monitor_data); $i < $monitorDataLength; ++$i) {
+      $monitores[$monitor_data[$i]->id] = $monitor_data[$i]->nombre;
     }
 
     $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_id);

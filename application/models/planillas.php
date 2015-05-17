@@ -7,7 +7,7 @@ class Planillas extends CI_Model {
   }
 
   public function get_usuarios_planilla($planilla_id) {
-    $this->db->select('nombre');
+    $this->db->select('id, nombre');
     $this->db->join('usuario', 'usuario.id = usuario_id');
     $this->db->where('planilla_id', $planilla_id);
     $query = $this->db->get('planilla_acceso');
