@@ -28,19 +28,21 @@ class Planillas extends CI_Model {
     return $query->result();
   }
 
-  public function get_sector_data_by_url($sector_url) {
-    $this->db->select('id, planta_id, nombre, medida');
+  public function get_sector_data_by_url($sector_url, $planta_id) {
+    $this->db->select('id, nombre, medida');
+    $this->db->where('planta_id', $planta_id);
     $this->db->where('url', $sector_url);
     $query = $this->db->get('base_planta_sector', 1);
     return $query->row(0);
   }
 
-  public function get_by_sector_url($sector_url, $limit = null) {
+  public function get_by_sector_url($sector_url, $planta_id, $limit = null) {
     $this->db->select('planilla.id, base.nombre, base_planta.nombre, base_planta_sector.nombre, fecha');
     $this->db->join('base_planta_sector', 'base_planta_sector.id = planilla.sector_id');
     $this->db->join('base_planta', 'base_planta.id = base_planta_sector.planta_id');
     $this->db->join('base', 'base.id = base_planta.base_id');
     $this->db->where('base_planta_sector.url', $sector_url);
+    $this->db->where('base_planta.id', $planta_id);
     $this->db->order_by('fecha', 'desc');
     $query = $this->db->get('planilla', $limit);
     return $query->result();
@@ -56,8 +58,9 @@ class Planillas extends CI_Model {
     return $query->row(0);
   }
 
-  public function get_all_sector() {
-    return $query = $this->db->get('base_planta_sector')->result();
+  public function get_all_sector($planta_id) {
+    $this->db->where('planta_id', $planta_id);
+    return $this->db->get('base_planta_sector')->result();
   }
 
   public function get_sector_acceso($usuario_id) {

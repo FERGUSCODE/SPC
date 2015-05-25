@@ -38,7 +38,8 @@ class Index extends CI_Controller {
             // Guardar datos en sesión
             $this->session->set_userdata('id', $id);
             $this->session->set_userdata('nombre', $userData->nombre);
-            $this->session->set_userdata('isAdmin', $userData->isAdmin);
+            $this->session->set_userdata('planta_id', $userData->planta_id);
+            $this->session->set_userdata('es_admin', $userData->es_admin);
 
             redirect('');
           } else {
@@ -56,20 +57,22 @@ class Index extends CI_Controller {
       $this->load->view('header');
       $this->load->view('ingreso', $data);
     } else {
-      if ($this->session->userdata('isAdmin')) {
+      if ($this->session->userdata('es_admin')) {
         $this->load->model('planillas');
+
+        $planta_id = $this->session->userdata('planta_id');
 
         $this->load->view('header');
         $this->load->view('header-admin', array(
           'enlace_base_planilla' => 'planilla/', 
-          'sectores' => $this->planillas->get_all_sector(), 
+          'sectores' => $this->planillas->get_all_sector($planta_id), 
           'nombre' => $this->session->userdata('nombre'),
           'successMsg' => $successMsg, 
           'warningMsg' => $warningMsg
         ));
         $this->load->view('portada', array(
           'enlace_base_planilla' => 'planilla/',
-          'sectores' => $this->planillas->get_all_sector()
+          'sectores' => $this->planillas->get_all_sector($planta_id)
         ));
       } else {
         redirect('operador');
@@ -81,7 +84,7 @@ class Index extends CI_Controller {
     $this->load->library('session');
     $this->session->unset_userdata('id');
     $this->session->unset_userdata('nombre');
-    $this->session->unset_userdata('isAdmin');
+    $this->session->unset_userdata('es_admin');
     redirect('/');
   }
 }

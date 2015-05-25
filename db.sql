@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `usuario` varchar(45) NOT NULL,
   `contrasena` varchar(45) NOT NULL,
   `nombre` varchar(100) NOT NULL,
-  `isAdmin` enum('0','1') NOT NULL DEFAULT '0',
+  `planta_id` int(10) unsigned NOT NULL,
+  `es_admin` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

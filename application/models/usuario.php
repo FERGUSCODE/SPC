@@ -17,25 +17,30 @@ class Usuario extends CI_Model {
 
   // Obtener datos
   public function get($id) {
-    $this->db->select('nombre, isAdmin');
+    $this->db->select('nombre, planta_id, es_admin');
     $this->db->where('id', $id);
     $query = $this->db->get('usuario', 1);
     return $query->row(0);
   }
 
   // Obtener id y nombre de todos los usuarios
-  public function get_all() {
+  public function get_all($planta_id = null) {
     $this->db->select('id, usuario, nombre');
+
+    if (!empty($planta_id)) {
+      $this->db->where('planta_id', $planta_id);
+    }
+
     $query = $this->db->get('usuario');
     return $query->result();
   }
 
-  public function registro_usuario($usuario, $contrasena, $nombre, $isAdmin) {
+  public function registro_usuario($usuario, $contrasena, $nombre, $esAdmin) {
     $query = $this->db->insert('usuario', array(
       'usuario' => $usuario,
       'contrasena' => $contrasena,
       'nombre' => $nombre,
-      'isAdmin' => $isAdmin
+      'es_admin' => $esAdmin
     ));
   }
 }

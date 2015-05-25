@@ -12,7 +12,7 @@ class Planilla extends CI_Controller {
     $this->load->library('session');
 
     // Revisar si es administrador
-    if (!$this->session->userdata('isAdmin')) {
+    if (!$this->session->userdata('es_admin')) {
       // No es administrador, redireccionar a otra parte
       redirect('/');
     }
@@ -28,8 +28,10 @@ class Planilla extends CI_Controller {
       redirect('/');
     }
 
-    $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
-    $planillas = $this->planillas->get_by_sector_url($sector_url);
+    $planta_id = $this->session->userdata('planta_id');
+
+    $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
+    $planillas = $this->planillas->get_by_sector_url($sector_url, $planta_id);
 
     $planilla_data = array();
     foreach ($planillas as $planilla) {
@@ -51,7 +53,7 @@ class Planilla extends CI_Controller {
       $this->load->view('header');
       $this->load->view('header-admin', array(
         'enlace_base_planilla' => 'planilla/', 
-        'sectores' => $this->planillas->get_all_sector(), 
+        'sectores' => $this->planillas->get_all_sector($planta_id), 
         'nombre' => $this->session->userdata('nombre')
       ));
       $this->load->view('planilla/index', array(
@@ -72,7 +74,9 @@ class Planilla extends CI_Controller {
       redirect('/planilla/' . $sector_url);
     }
 
-    $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
+    $planta_id = $this->session->userdata('planta_id');
+
+    $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
     $monitor_data = $this->planillas->get_usuarios_planilla($planilla_id);
 
     $monitores = array();
@@ -100,7 +104,7 @@ class Planilla extends CI_Controller {
     $this->load->view('header');
     $this->load->view('header-admin', array(
       'enlace_base_planilla' => 'planilla/', 
-      'sectores' => $this->planillas->get_all_sector(), 
+      'sectores' => $this->planillas->get_all_sector($planta_id), 
       'nombre' => $this->session->userdata('nombre')
     ));
     $this->load->view('planilla/ver', array(
@@ -117,7 +121,9 @@ class Planilla extends CI_Controller {
   }
 
   public function agregar($sector_url) {
-    $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
+    $planta_id = $this->session->userdata('planta_id');
+
+    $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
 
     // Ver si ha enviado algunos datos
     $fecha = $this->input->post('fecha');
@@ -132,13 +138,13 @@ class Planilla extends CI_Controller {
     $this->load->view('header');
     $this->load->view('header-admin', array(
       'enlace_base_planilla' => 'planilla/', 
-      'sectores' => $this->planillas->get_all_sector(), 
+      'sectores' => $this->planillas->get_all_sector($planta_id), 
       'nombre' => $this->session->userdata('nombre')
     ));
     $this->load->view('planilla/modificar', array(
       'titulo' => 'Crear planilla para ' . $sector_data->nombre,
       'fecha' => date('Y-m-d'), 
-      'usuarios' => $this->usuario->get_all(), 
+      'usuarios' => $this->usuario->get_all($planta_id), 
       'submit_button_text' => 'Crear Planilla'
     ));
   }
@@ -155,7 +161,9 @@ class Planilla extends CI_Controller {
       redirect('/planilla/' . $sector_url);
     }
 
-    $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
+    $planta_id = $this->session->userdata('planta_id');
+
+    $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
 
     // Ver si ha enviado algunos datos
     $fecha = $this->input->post('fecha'); 
@@ -173,20 +181,20 @@ class Planilla extends CI_Controller {
     $this->load->view('header');
     $this->load->view('header-admin', array(
       'enlace_base_planilla' => 'planilla/', 
-      'sectores' => $this->planillas->get_all_sector(), 
+      'sectores' => $this->planillas->get_all_sector($planta_id), 
       'nombre' => $this->session->userdata('nombre')
     ));
     $this->load->view('planilla/modificar',array(
       'titulo' => 'Editar planilla de ' . $sector_data->nombre,
       'fecha' => $planilla_dato->fecha, 
-      'usuarios' => $this->usuario->get_all(), 
+      'usuarios' => $this->usuario->get_all($planta_id), 
       'submit_button_text' => 'Editar Planilla'
     ));
   }
 
   public function pdf($sector_url, $planilla_id = 0) {
     // Prevenir ser accedido por no administradores
-    if (!$this->session->userdata('isAdmin')) {
+    if (!$this->session->userdata('es_admin')) {
       redirect('/');
     }
 
@@ -195,7 +203,9 @@ class Planilla extends CI_Controller {
       redirect('/planilla/' . $sector_url);
     }
 
-    $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
+    $planta_id = $this->session->userdata('planta_id');
+
+    $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
     $monitor_nombre = $this->planillas->get_usuarios_planilla($planilla_id);
 
     $monitores = array();

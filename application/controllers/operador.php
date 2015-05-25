@@ -17,11 +17,12 @@ class Operador extends CI_Controller {
 
   public function index() {
     // En caso de administrador, usar menú inicial
-    if ($this->session->userdata('isAdmin')) {
+    if ($this->session->userdata('es_admin')) {
       redirect('/');
     }
 
     // Obtener datos de sectores permitidos segun el usuario
+    $planta_id = $this->session->userdata('planta_id');
     $sector_access_data = $this->planillas->get_sector_acceso($this->session->userdata('id'));
 
     // Buffer de botones para agregar datos
@@ -29,7 +30,7 @@ class Operador extends CI_Controller {
 
     for ($i = 0, $datosLength = sizeof($sector_access_data); $i < $datosLength; ++$i) {
       if ($sector_access_data[$i]->fecha == date('Y-m-d')) {
-        $sector_data = $this->planillas->get_sector_data_by_url($sector_access_data[$i]->url);
+        $sector_data = $this->planillas->get_sector_data_by_url($sector_access_data[$i]->url, $planta_id);
 
         // Ponerlo en buffer
         array_push($botones, array(
@@ -52,7 +53,8 @@ class Operador extends CI_Controller {
     $successMsg = '';
     $warningMsg = '';
 
-    $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
+    $planta_id = $this->session->userdata('planta_id');
+    $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
 
     $inputs = $this->input->post('value');
     if ($inputs) {
@@ -95,10 +97,10 @@ class Operador extends CI_Controller {
 
     // Mostrar interfaz
     $this->load->view('header');
-    if ($this->session->userdata('isAdmin')) {
+    if ($this->session->userdata('es_admin')) {
       $this->load->view('header-admin', array(
         'enlace_base_planilla' => 'planilla/', 
-        'sectores' => $this->planillas->get_all_sector(), 
+        'sectores' => $this->planillas->get_all_sector($planta_id), 
         'nombre' => $this->session->userdata('nombre'),
         'successMsg' => $successMsg, 
         'warningMsg' => $warningMsg
@@ -112,7 +114,7 @@ class Operador extends CI_Controller {
 
   public function editar($sector_url, $dato_id = 0) {
     // Prevenir ser accedido por no administradores
-    if (!$this->session->userdata('isAdmin')) {
+    if (!$this->session->userdata('es_admin')) {
       redirect('/');
     }
 
@@ -121,7 +123,8 @@ class Operador extends CI_Controller {
       redirect('/planilla/' . $sector_url);
     }
 
-    $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
+    $planta_id = $this->session->userdata('planta_id');
+    $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
 
     // Buffer de mensaje
     $successMsg = '';
@@ -158,7 +161,7 @@ class Operador extends CI_Controller {
     $this->load->view('header');
     $this->load->view('header-admin', array(
       'enlace_base_planilla' => 'planilla/', 
-      'sectores' => $this->planillas->get_all_sector(), 
+      'sectores' => $this->planillas->get_all_sector($planta_id), 
       'nombre' => $this->session->userdata('nombre'), 
       'successMsg' => $successMsg,
       'warningMsg' => $warningMsg
@@ -177,7 +180,7 @@ class Operador extends CI_Controller {
 
   public function eliminar($sector_url, $dato_id = 0) {
     // Prevenir ser accedido por no administradores
-    if (!$this->session->userdata('isAdmin')) {
+    if (!$this->session->userdata('es_admin')) {
       redirect('/');
     }
 
@@ -195,7 +198,8 @@ class Operador extends CI_Controller {
       redirect('/');
     }
 
-    $sector_data = $this->planillas->get_sector_data_by_url($sector_url);
+    $planta_id = $this->session->userdata('planta_id');
+    $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
 
     $planilla_data = $this->planillas->get_by_id($planilla_id);
     $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_id);
@@ -219,10 +223,10 @@ class Operador extends CI_Controller {
     }
 
     $this->load->view('header');
-    if ($this->session->userdata('isAdmin')) {
+    if ($this->session->userdata('es_admin')) {
       $this->load->view('header-admin', array(
         'enlace_base_planilla' => 'planilla/', 
-        'sectores' => $this->planillas->get_all_sector(), 
+        'sectores' => $this->planillas->get_all_sector($planta_id), 
         'nombre' => $this->session->userdata('nombre')
       ));
     }
