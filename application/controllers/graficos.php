@@ -39,25 +39,32 @@ class Graficos extends CI_Controller {
     $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
 
     $planilla_data = $this->planillas->get_by_sector_url($sector_url, $planta_id, 1);
-    $planilla_data = $planilla_data[0];
-    $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_data->id);
+    if (sizeof($planilla_data)) {
+      $planilla_data = $planilla_data[0];
+      $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_data->id);
 
-    $datos = array();
-    for ($i = 0, $planillaDatosLength = sizeof($planilla_datos), $maquinaId; $i < $planillaDatosLength; ++$i) {
-      $maquinaId = $planilla_datos[$i]->maquina_id;
+      $datos = array();
+      for ($i = 0, $planillaDatosLength = sizeof($planilla_datos), $maquinaId; $i < $planillaDatosLength; ++$i) {
+        $maquinaId = $planilla_datos[$i]->maquina_id;
 
-      if (!isset($datos[$maquinaId]['min'])) {
-        $maquina_dato = $this->planillas->get_maquina_by_id($maquinaId);
-        $datos[$maquinaId]['nombre'] = $maquina_dato->nombre;
-        $datos[$maquinaId]['min'] = $maquina_dato->min;
-        $datos[$maquinaId]['max'] = $maquina_dato->max;
-        $datos[$maquinaId]['unidad'] = $maquina_dato->unidad;
-        $datos[$maquinaId]['tiempo'] = array();
-        $datos[$maquinaId]['valor'] = array();
+        if (!isset($datos[$maquinaId]['min'])) {
+          $maquina_dato = $this->planillas->get_maquina_by_id($maquinaId);
+          $datos[$maquinaId]['nombre'] = $maquina_dato->nombre;
+          $datos[$maquinaId]['min'] = $maquina_dato->min;
+          $datos[$maquinaId]['max'] = $maquina_dato->max;
+          $datos[$maquinaId]['unidad'] = $maquina_dato->unidad;
+          $datos[$maquinaId]['tiempo'] = array();
+          $datos[$maquinaId]['valor'] = array();
+        }
+
+        array_push($datos[$maquinaId]['tiempo'], $planilla_datos[$i]->tiempo);
+        array_push($datos[$maquinaId]['valor'], $planilla_datos[$i]->valor);
       }
-
-      array_push($datos[$maquinaId]['tiempo'], $planilla_datos[$i]->tiempo);
-      array_push($datos[$maquinaId]['valor'], $planilla_datos[$i]->valor);
+    } else {
+      $planilla_data = (object) array(
+        'fecha' => 'Sin planilla'
+      );
+      $datos = array();
     }
 
     $this->load->view('header');

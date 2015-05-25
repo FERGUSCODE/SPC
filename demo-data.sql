@@ -1,0 +1,75 @@
+INSERT INTO `base` (`id`, `nombre`) VALUES
+(1, 'Base 1'),
+(2, 'Base 2');
+
+INSERT INTO `base_planta` (`id`, `base_id`, `nombre`) VALUES
+(1, 1, 'Planta 1'),
+(2, 1, 'Planta 2'),
+(3, 2, 'Planta 1'),
+(4, 2, 'Planta 2');
+
+INSERT INTO `base_planta_sector` (`id`, `planta_id`, `nombre`, `url`, `medida`) VALUES
+(1, 1, 'Sector 1', 'sector1', 'Temperatura'),
+(2, 1, 'Sector 2', 'sector2', 'Presión'),
+(3, 1, 'Sector 3', 'sector3', 'Concentración'),
+(4, 1, 'Sector 4', 'sector4', 'Masa'),
+(5, 2, 'Sector 1', 'sector1', 'Temperatura'),
+(6, 2, 'Sector 2', 'sector2', 'Presión'),
+(7, 2, 'Sector 3', 'sector3', 'Concentración'),
+(8, 2, 'Sector 4', 'sector4', 'Masa'),
+(9, 3, 'Sector 1', 'sector1', 'Temperatura'),
+(10, 3, 'Sector 2', 'sector2', 'Presión'),
+(11, 3, 'Sector 3', 'sector3', 'Concentración'),
+(12, 3, 'Sector 4', 'sector4', 'Masa'),
+(13, 4, 'Sector 1', 'sector1', 'Temperatura'),
+(14, 4, 'Sector 2', 'sector2', 'Presión'),
+(15, 4, 'Sector 3', 'sector3', 'Concentración'),
+(16, 4, 'Sector 4', 'sector4', 'Masa');
+
+INSERT INTO `base_planta_sector_maquina` (`id`, `sector_id`, `nombre`, `min`, `max`, `unidad`) VALUES
+(1, 1, 'Maquina #1', 90, 98, '°C'),
+(2, 1, 'Maquina #2', 90, 98, '°C'),
+(3, 2, 'Maquina #1', 120, 140, 'Bar'),
+(4, 2, 'Maquina #2', 120, 140, 'Bar'),
+(5, 3, 'Maquina #1', 37, 42, '%'),
+(6, 3, 'Maquina #2', 37, 42, '%'),
+(7, 4, 'Maquina #1', 7, 9, 'g'),
+(8, 4, 'Maquina #2', 7, 9, 'g'),
+(9, 5, 'Maquina #1', 90, 98, '°C'),
+(10, 5, 'Maquina #2', 90, 98, '°C'),
+(11, 6, 'Maquina #1', 120, 140, 'Bar'),
+(12, 6, 'Maquina #2', 120, 140, 'Bar'),
+(13, 7, 'Maquina #1', 37, 42, '%'),
+(14, 7, 'Maquina #2', 37, 42, '%'),
+(15, 8, 'Maquina #1', 7, 9, 'g'),
+(16, 8, 'Maquina #2', 7, 9, 'g'),
+(17, 9, 'Maquina #1', 90, 98, '°C'),
+(18, 9, 'Maquina #2', 90, 98, '°C'),
+(19, 10, 'Maquina #1', 120, 140, 'Bar'),
+(20, 10, 'Maquina #2', 120, 140, 'Bar'),
+(21, 11, 'Maquina #1', 37, 42, '%'),
+(22, 11, 'Maquina #2', 37, 42, '%'),
+(23, 12, 'Maquina #1', 7, 9, 'g'),
+(24, 12, 'Maquina #2', 7, 9, 'g'),
+(25, 13, 'Maquina #1', 90, 98, '°C'),
+(26, 13, 'Maquina #2', 90, 98, '°C'),
+(27, 14, 'Maquina #1', 120, 140, 'Bar'),
+(28, 14, 'Maquina #2', 120, 140, 'Bar'),
+(29, 15, 'Maquina #1', 37, 42, '%'),
+(30, 15, 'Maquina #2', 37, 42, '%'),
+(31, 16, 'Maquina #1', 7, 9, 'g'),
+(32, 16, 'Maquina #2', 7, 9, 'g');
+
+INSERT INTO `usuario` (`id`, `usuario`, `contrasena`, `nombre`, `planta_id`, `es_admin`) VALUES
+(1, 'admin11', 'test', 'Administrador Base 1 Planta 1', 1, '1'),
+(2, 'user111', 'test', 'Usuario 1 Base 1 Planta 1', 1, '0'),
+(3, 'user112', 'test', 'Usuario 2 Base 1 Planta 1', 1, '0'),
+(4, 'admin12', 'test', 'Administrador Base 1 Planta 2', 2, '1'),
+(5, 'user121', 'test', 'Usuario 1 Base 1 Planta 2', 2, '0'),
+(6, 'user122', 'test', 'Usuario 2 Base 1 Planta 2', 2, '0'),
+(7, 'admin21', 'test', 'Administrador Base 2 Planta 1', 3, '1'),
+(8, 'user211', 'test', 'Usuario 1 Base 2 Planta 1', 3, '0'),
+(9, 'user212', 'test', 'Usuario 2 Base 2 Planta 1', 3, '0'),
+(10, 'admin22', 'test', 'Administrador Base 2 Planta 2', 4, '1'),
+(11, 'user221', 'test', 'Usuario 1 Base 2 Planta 2', 4, '0'),
+(12, 'user222', 'test', 'Usuario 2 Base 2 Planta 2', 4, '0');
