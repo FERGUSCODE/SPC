@@ -41,6 +41,8 @@ class Graficos extends CI_Controller {
     $planilla_data = $this->planillas->get_by_sector_url($sector_url, $planta_id, 1);
     if (sizeof($planilla_data)) {
       $planilla_data = $planilla_data[0];
+      $fecha = date('Y-m-d', strtotime($planilla_data->tiempo_inicio));
+
       $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_data->id);
 
       $datos = array();
@@ -61,16 +63,14 @@ class Graficos extends CI_Controller {
         array_push($datos[$maquinaId]['valor'], $planilla_datos[$i]->valor);
       }
     } else {
-      $planilla_data = (object) array(
-        'fecha' => 'Sin planilla'
-      );
+      $fecha = 'Sin planilla';
       $datos = array();
     }
 
     $this->load->view('header');
     $this->load->view('operador/grafico', array(
       'titulo' => $sector_data->medida, 
-      'fecha' => $planilla_data->fecha,
+      'fecha' => $fecha,
       'datos' => $datos, 
       'siguiente_url' => 'graficos/' . $siguiente_url
     ));
