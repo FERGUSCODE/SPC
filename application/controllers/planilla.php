@@ -45,7 +45,7 @@ class Planilla extends CI_Controller {
       $tiempo_inicio = strtotime($planilla->tiempo_inicio);
       $tiempo_final = strtotime($planilla->tiempo_final);
       $ahora = $_SERVER['REQUEST_TIME'];
-      $editable = $ahora >= $tiempo_inicio && $ahora <= $tiempo_final;
+      $editable = $ahora <= $tiempo_final;
 
       $UUID = strtolower($planilla->UUID);
       $planillaUUID = sprintf('%08s-%04s-%04s-%04s-%12s', 
@@ -186,6 +186,17 @@ class Planilla extends CI_Controller {
       }
     }
 
+    $usuarios = $this->usuario->get_all($planta_id);
+    $lista_usuarios = array();
+    for ($i = 0, $usuariosLength = sizeof($usuarios), $currentUsuario; $i < $usuariosLength; ++$i) {
+      $currentUsuario = $usuarios[$i];
+      array_push($lista_usuarios, array(
+        'id' => $currentUsuario->id, 
+        'nombre' => $currentUsuario->nombre, 
+        'seleccionado' => 0
+      ));
+    }
+
     $this->load->view('header');
     $this->load->view('header-admin', array(
       'enlace_base_planilla' => 'planilla/', 
@@ -196,7 +207,7 @@ class Planilla extends CI_Controller {
     $this->load->view('planilla/modificar', array(
       'titulo' => 'Crear planilla para ' . $sector_data->nombre,
       'fecha' => date('Y-m-d'), 
-      'usuarios' => $this->usuario->get_all($planta_id), 
+      'usuarios' => $lista_usuarios, 
       'submit_button_text' => 'Crear Planilla'
     ));
   }
@@ -214,7 +225,7 @@ class Planilla extends CI_Controller {
       $tiempo_final = strtotime($planilla_dato->tiempo_final);
       $ahora = $_SERVER['REQUEST_TIME'];
 
-      if ($ahora < $tiempo_inicio && $ahora > $tiempo_final) {
+      if ($ahora > $tiempo_final) {
         redirect('/planilla/' . $sector_url);
       }
 
@@ -237,6 +248,27 @@ class Planilla extends CI_Controller {
         redirect('/planilla/' . $sector_url);
       }
 
+      $monitor_data = $this->planillas->get_usuarios_planilla($planilla_dato->id);
+
+      $usuarios = $this->usuario->get_all($planta_id);
+      $lista_usuarios = array();
+      for ($i = 0, $usuariosLength = sizeof($usuarios), $currentUsuario; $i < $usuariosLength; ++$i) {
+        $currentUsuario = $usuarios[$i];
+
+        $seleccionado = 0;
+        for ($j = 0, $monitorDataLength = sizeof($monitor_data); $j < $monitorDataLength; ++$j) {
+          if ($monitor_data[$j]->id == $currentUsuario->id) {
+            $seleccionado = 1;
+            break;
+          }
+        }
+
+        array_push($lista_usuarios, array(
+          'id' => $currentUsuario->id, 
+          'nombre' => $currentUsuario->nombre, 
+          'seleccionado' => $seleccionado
+        ));
+      }
 
       $this->load->view('header');
       $this->load->view('header-admin', array(
@@ -247,7 +279,7 @@ class Planilla extends CI_Controller {
       $this->load->view('planilla/modificar',array(
         'titulo' => 'Editar planilla de ' . $sector_data->nombre,
         'fecha' => date('Y-m-d', strtotime($planilla_dato->tiempo_inicio)), 
-        'usuarios' => $this->usuario->get_all($planta_id), 
+        'usuarios' => $lista_usuarios, 
         'submit_button_text' => 'Editar Planilla'
       ));
     } else {

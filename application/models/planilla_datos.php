@@ -23,7 +23,7 @@ class Planilla_Datos extends CI_Model {
 
   public function insert($usuario_id, $datos) {
     // Fecha de ahora
-    $ahora = date('H:i:s', $this->input->server('REQUEST_TIME'));
+    $ahora = $this->input->server('REQUEST_TIME');
 
     // Buffer para agregar datos
     $batch = array();
@@ -39,6 +39,7 @@ class Planilla_Datos extends CI_Model {
         $this->db->join('planilla', 'planilla.id = planilla_acceso.planilla_id');
         $this->db->where('sector_id', $datos[$i]['sector_id']);
         $this->db->where('usuario_id', $usuario_id);
+        $this->db->where('\'' . date('Y-m-d H:i:s', $ahora) . '\' BETWEEN `tiempo_inicio` AND `tiempo_final`', NULL, FALSE);
         $this->db->order_by('tiempo_inicio', 'desc');
         $query = $this->db->get('planilla_acceso', 1);
 
@@ -56,7 +57,7 @@ class Planilla_Datos extends CI_Model {
         'usuario_id' => $usuario_id,
         'maquina_id' => $datos[$i]['maquina_id'],
         'valor' => $datos[$i]['valor'], 
-        'tiempo' => $ahora
+        'tiempo' => date('H:i:s', $ahora)
       ));
     }
 

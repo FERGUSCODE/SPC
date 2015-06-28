@@ -8,7 +8,7 @@
 <?php
 for ($i = 0, $usuariosLength = sizeof($usuarios), $currentUsuario; $i < $usuariosLength; ++$i) {
   $currentUsuario = $usuarios[$i];
-  echo '<option value="' . $currentUsuario->id . '"> ' . $currentUsuario->nombre . '</option>';
+  echo '<option value="' . $currentUsuario['id'] . '"' . ($currentUsuario['seleccionado'] ? ' selected' : '') . '> ' . $currentUsuario['nombre'] . '</option>';
 }
 ?>
 </select>
