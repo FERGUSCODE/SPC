@@ -1,5 +1,5 @@
 <div class="container">
-<h1><?php echo $titulo . ' ' . $datos->fecha; ?></h1>
+<h1><?php echo $titulo . ' ' . $datos['fecha']; ?></h1>
 <table class="table table-striped table-bordered">
 <thead>
 <tr>
@@ -10,10 +10,10 @@
 </tr>
 </thead>
 <tbody>
-<td><?php echo implode(', ', $monitores); $editable = $datos->fecha == date('Y-m-d') && in_array($this->session->userdata('id'), array_keys($monitores)); ?></td>
+<td><?php echo implode(', ', $monitores); ?></td>
 <td class="col-md-1 text-center"><a href="<?php echo $editable ? base_url($enlace_agregar_dato) : ''; ?>" class="btn btn-default btn-sm<?php echo $editable ? '' : ' disabled'; ?>"><span class="glyphicon glyphicon-plus"></span> Insertar Registro</a>
-<td class="col-md-1 text-center"><a href="<?php echo base_url($enlace_base_exportar_dato . $datos->id); ?>" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-file"></span> PDF</a>
-<td class="col-md-1 text-center"><a href="<?php echo base_url($enlace_base_grafico_dato . $datos->id); ?>" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-stats"></span> Ver</a>
+<td class="col-md-1 text-center"><a href="<?php echo base_url($enlace_base_exportar_dato . $datos['id']); ?>" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-file"></span> PDF</a>
+<td class="col-md-1 text-center"><a href="<?php echo base_url($enlace_base_grafico_dato . $datos['id']); ?>" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-stats"></span> Ver</a>
 </tr>
 </tbody>
 </table>

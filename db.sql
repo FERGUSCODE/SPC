@@ -32,8 +32,10 @@ CREATE TABLE IF NOT EXISTS `base_planta_sector_maquina` (
 
 CREATE TABLE IF NOT EXISTS `planilla` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `UUID` binary(16) NOT NULL,
   `sector_id` int(10) unsigned NOT NULL,
-  `fecha` date NOT NULL,
+  `tiempo_inicio` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tiempo_final` datetime NOT NULL
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

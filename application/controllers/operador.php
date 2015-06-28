@@ -29,13 +29,18 @@ class Operador extends CI_Controller {
     $botones = array();
 
     for ($i = 0, $datosLength = sizeof($sector_access_data); $i < $datosLength; ++$i) {
-      if ($sector_access_data[$i]->fecha == date('Y-m-d')) {
+      $tiempo_inicio = strtotime($sector_access_data[$i]->tiempo_inicio);
+      $tiempo_final = strtotime($sector_access_data[$i]->tiempo_final);
+      $ahora = $_SERVER['REQUEST_TIME'];
+      $editable = $ahora >= $tiempo_inicio && $ahora <= $tiempo_final;
+
+      if ($editable) {
         $sector_data = $this->planillas->get_sector_data_by_url($sector_access_data[$i]->url, $planta_id);
 
         // Ponerlo en buffer
         array_push($botones, array(
           'titulo' => 'Agregar ' . $sector_data->medida, 
-          'fecha' => $sector_access_data[$i]->fecha, 
+          'fecha' => date('Y-m-d', strtotime($sector_access_data[$i]->tiempo_inicio)), 
           'enlace_agregar_dato' => 'operador/' . $sector_access_data[$i]->url . '/agregar'
         ));
       }
@@ -55,61 +60,75 @@ class Operador extends CI_Controller {
 
     $planta_id = $this->session->userdata('planta_id');
     $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
+    $sector_access_data = $this->planillas->get_sector_acceso($this->session->userdata('id'), $sector_data->id);
 
-    $inputs = $this->input->post('value');
-    if ($inputs) {
-      // Buffer de los datos para insertar
-      $datos = array();
+    if (1 == sizeof($sector_access_data)) {
+      $tiempo_inicio = strtotime($sector_access_data[0]->tiempo_inicio);
+      $tiempo_final = strtotime($sector_access_data[0]->tiempo_final);
+      $ahora = $_SERVER['REQUEST_TIME'];
+      $editable = $ahora >= $tiempo_inicio && $ahora <= $tiempo_final;
 
-      // Loop de los inputs
-      foreach ($inputs as $input_maquina => $input_valor) {
-        // Si el valor de input no es vacio y es numerico
-        if (!empty($input_valor) && is_numeric($input_valor)) {
-          // Agregar al buffer
-          array_push($datos, array(
-            'sector_id' => $sector_data->id, 
-            'maquina_id' => $input_maquina, 
-            'valor' => $input_valor
+      if ($editable) {
+        $inputs = $this->input->post('value');
+        if ($inputs) {
+          // Buffer de los datos para insertar
+          $datos = array();
+
+          // Loop de los inputs
+          foreach ($inputs as $input_maquina => $input_valor) {
+            // Si el valor de input no es vacio y es numerico
+            if (!empty($input_valor) && is_numeric($input_valor)) {
+              // Agregar al buffer
+              array_push($datos, array(
+                'sector_id' => $sector_data->id, 
+                'maquina_id' => $input_maquina, 
+                'valor' => $input_valor
+              ));
+            }
+          }
+
+          // Insertar datos en conjunto
+          if ($this->planilla_datos->insert($this->session->userdata('id'), $datos)) {
+            // Configurar mensaje y redireccionar
+            $successMsg = 'La información ha sido ingresada correctamente';
+          } else {
+            $warningMsg = '¡Detectamos intento de acceso de datos no correspondiente!';
+          }
+        }
+
+        // Buffer de inputs
+        $inputs = array();
+        for ($i = 0, 
+             $maquinas = $this->planillas->get_maquinas_by_sector_id($sector_data->id), 
+             $maquinasLength = sizeof($maquinas); $i < $maquinasLength; ++$i) {
+          array_push($inputs, array(
+            'nombre' => $maquinas[$i]->nombre, 
+            'maquina' => $maquinas[$i]->id, 
+            'valor' => 0
           ));
         }
-      }
 
-      // Insertar datos en conjunto
-      if ($this->planilla_datos->insert($this->session->userdata('id'), $datos)) {
-        // Configurar mensaje y redireccionar
-        $successMsg = 'La información ha sido ingresada correctamente';
+        // Mostrar interfaz
+        $this->load->view('header');
+        if ($this->session->userdata('es_admin')) {
+          $this->load->view('header-admin', array(
+            'enlace_base_planilla' => 'planilla/', 
+            'sectores' => $this->planillas->get_all_sector($planta_id), 
+            'nombre' => $this->session->userdata('nombre'),
+            'successMsg' => $successMsg, 
+            'warningMsg' => $warningMsg
+          ));
+        }
+        $this->load->view('operador/modificar', array(
+          'titulo' => 'Agregar ' . $sector_data->medida, 
+          'inputs' => $inputs
+        ));
       } else {
-        $warningMsg = '¡Detectamos intento de acceso de datos no correspondiente!';
+        show_404();
       }
+    } else {
+      show_404();
     }
-
-    // Buffer de inputs
-    $inputs = array();
-    for ($i = 0, 
-         $maquinas = $this->planillas->get_maquinas_by_sector_id($sector_data->id), 
-         $maquinasLength = sizeof($maquinas); $i < $maquinasLength; ++$i) {
-      array_push($inputs, array(
-        'nombre' => $maquinas[$i]->nombre, 
-        'maquina' => $maquinas[$i]->id, 
-        'valor' => 0
-      ));
-    }
-
-    // Mostrar interfaz
-    $this->load->view('header');
-    if ($this->session->userdata('es_admin')) {
-      $this->load->view('header-admin', array(
-        'enlace_base_planilla' => 'planilla/', 
-        'sectores' => $this->planillas->get_all_sector($planta_id), 
-        'nombre' => $this->session->userdata('nombre'),
-        'successMsg' => $successMsg, 
-        'warningMsg' => $warningMsg
-      ));
-    }
-    $this->load->view('operador/modificar', array(
-      'titulo' => 'Agregar ' . $sector_data->medida, 
-      'inputs' => $inputs
-    ));
   }
 
   public function editar($sector_url, $dato_id = 0) {
@@ -192,48 +211,53 @@ class Operador extends CI_Controller {
     redirect('/planilla/' . $sector_url);
   }
 
-  public function grafico($sector_url, $planilla_id = 0) {
+  public function grafico($sector_url, $planilla_id = '') {
     // Evitar de haber ingresado sin el id de la planilla
-    if (!$planilla_id) {
+    if (empty($planilla_id)) {
       redirect('/');
     }
 
-    $planta_id = $this->session->userdata('planta_id');
-    $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
+    $planilla_data = $this->planillas->get_by_UUID($planilla_id);
 
-    $planilla_data = $this->planillas->get_by_id($planilla_id);
-    $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_id);
+    if (sizeof($planilla_data)) {
+      $planta_id = $this->session->userdata('planta_id');
+      $sector_data = $this->planillas->get_sector_data_by_url($sector_url, $planta_id);
 
-    $datos = array();
-    for ($i = 0, $planillaDatosLength = sizeof($planilla_datos), $maquinaId; $i < $planillaDatosLength; ++$i) {
-      $maquinaId = $planilla_datos[$i]->maquina_id;
+      $planilla_datos = $this->planilla_datos->get_by_planilla($planilla_data->id);
 
-      if (!isset($datos[$maquinaId]['min'])) {
-        $maquina_dato = $this->planillas->get_maquina_by_id($maquinaId);
-        $datos[$maquinaId]['nombre'] = $maquina_dato->nombre;
-        $datos[$maquinaId]['min'] = $maquina_dato->min;
-        $datos[$maquinaId]['max'] = $maquina_dato->max;
-        $datos[$maquinaId]['unidad'] = $maquina_dato->unidad;
-        $datos[$maquinaId]['tiempo'] = array();
-        $datos[$maquinaId]['valor'] = array();
+      $datos = array();
+      for ($i = 0, $planillaDatosLength = sizeof($planilla_datos), $maquinaId; $i < $planillaDatosLength; ++$i) {
+        $maquinaId = $planilla_datos[$i]->maquina_id;
+
+        if (!isset($datos[$maquinaId]['min'])) {
+          $maquina_dato = $this->planillas->get_maquina_by_id($maquinaId);
+          $datos[$maquinaId]['nombre'] = $maquina_dato->nombre;
+          $datos[$maquinaId]['min'] = $maquina_dato->min;
+          $datos[$maquinaId]['max'] = $maquina_dato->max;
+          $datos[$maquinaId]['unidad'] = $maquina_dato->unidad;
+          $datos[$maquinaId]['tiempo'] = array();
+          $datos[$maquinaId]['valor'] = array();
+        }
+
+        array_push($datos[$maquinaId]['tiempo'], $planilla_datos[$i]->tiempo);
+        array_push($datos[$maquinaId]['valor'], $planilla_datos[$i]->valor);
       }
 
-      array_push($datos[$maquinaId]['tiempo'], $planilla_datos[$i]->tiempo);
-      array_push($datos[$maquinaId]['valor'], $planilla_datos[$i]->valor);
-    }
-
-    $this->load->view('header');
-    if ($this->session->userdata('es_admin')) {
-      $this->load->view('header-admin', array(
-        'enlace_base_planilla' => 'planilla/', 
-        'sectores' => $this->planillas->get_all_sector($planta_id), 
-        'nombre' => $this->session->userdata('nombre')
+      $this->load->view('header');
+      if ($this->session->userdata('es_admin')) {
+        $this->load->view('header-admin', array(
+          'enlace_base_planilla' => 'planilla/', 
+          'sectores' => $this->planillas->get_all_sector($planta_id), 
+          'nombre' => $this->session->userdata('nombre')
+        ));
+      }
+      $this->load->view('operador/grafico', array(
+        'titulo' => $sector_data->medida, 
+        'fecha' => date('Y-m-d', strtotime($planilla_data->tiempo_inicio)), 
+        'datos' => $datos
       ));
+    } else {
+      show_404();
     }
-    $this->load->view('operador/grafico', array(
-      'titulo' => $sector_data->medida, 
-      'fecha' => $planilla_data->fecha, 
-      'datos' => $datos
-    ));
   }
 }

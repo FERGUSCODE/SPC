@@ -42,8 +42,8 @@ $route['default_controller'] = 'index';
 $route['404_override'] = '';
 $route['logout'] = 'index/logout';
 $route['planilla/(\w+)'] = 'planilla/index/$1';
-$route['planilla/(\w+)/(\w+)[/]*(\d+)*'] = 'planilla/$2/$1/$3';
-$route['operador/(\w+)/(\w+)[/]*(\d+)*'] = 'operador/$2/$1/$3';
+$route['planilla/(\w+)/(\w+)(?:[/](.+))*'] = 'planilla/$2/$1/$3';
+$route['operador/(\w+)/(\w+)(?:[/](.+))*'] = 'operador/$2/$1/$3';
 $route['graficos/(\w+)'] = 'graficos/index/$1';
 
 
