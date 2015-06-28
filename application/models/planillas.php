@@ -115,7 +115,7 @@ class Planillas extends CI_Model {
       substr($hash, 20, 12)
     );
 
-    if (0 == sizeof($this->db->select('1', FALSE)->where('UUID = UNHEX(\'' . $planillaUUID . '\')')->get('planilla', 1))) {
+    if (0 == sizeof($this->db->select('1', FALSE)->where('UUID = UNHEX(\'' . $planillaUUID . '\')')->get('planilla', 1)->row(0))) {
       $this->db->set('UUID', 'UNHEX(\'' . $planillaUUID . '\')', FALSE);
       $this->db->insert('planilla', array(
         'sector_id' => $sector_id,
